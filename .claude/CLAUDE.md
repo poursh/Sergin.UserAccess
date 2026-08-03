@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Sergin.UserAccess is the UserAccess module (Postgres schema `ua`) for the **Sergin** platform — a .NET 10 modular monolith HES (Head-End System) for utility smart metering. It owns user identity/access; currently the `Users` aggregate.
+Sergin.UserAccess is the UserAccess module (Postgres schema `ua`) for the **Sergin** platform — a .NET 10 modular monolith whose **MeterMinder** module is a Head-End System (HES) for smart electricity/gas/water meters. This module owns user identity/access; currently the `Users` aggregate.
 
 **This repo is embed-only.** There is no solution file, no `Directory.Build.props`/`Directory.Packages.props`, no dev config here — see `README.md` for why. It only compiles as a git submodule inside a host repo (today: [Sergin.MeterMinder](https://github.com/poursh/Sergin.MeterMinder)) that also provides a `Sergin.SharedKernel` submodule at the matching relative path. When working in this repo, assume you're editing it from inside that host checkout — `dotnet build`/`dotnet test` commands run against the *host's* solution file, not one in this repo.
 
