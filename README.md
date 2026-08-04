@@ -1,6 +1,6 @@
 # Sergin.UserAccess
 
-The UserAccess module (schema `ua`) for the [Sergin](https://github.com/poursh/Sergin.MeterMinder) HES (Head-End System) platform. Owns user identity/access — currently the `Users` aggregate.
+The UserAccess module (schema `ua`) for the [Sergin](https://github.com/poursh/Sergin.MeterMinder) platform, whose **MeterMinder** module is a Head-End System (HES) for smart electricity/gas/water meters. Owns user identity/access — currently the `Users` aggregate.
 
 ## This repo is embed-only — it does not build standalone
 
@@ -16,3 +16,7 @@ git clone --recurse-submodules https://github.com/poursh/Sergin.MeterMinder.git
 ```
 
 See `.claude/CLAUDE.md` for this module's architecture and conventions.
+
+## License
+
+[MIT](LICENSE) © Pejman Pourshirazi.
