@@ -1,0 +1,26 @@
+@page "/ua/users"
+
+<PageTitle>Users</PageTitle>
+
+<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-4">
+    <MudText Typo="Typo.h4">Users</MudText>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add" Href="/ua/users/new">New user</MudButton>
+</MudStack>
+
+<MudTable T="GetUserListItem" ServerData="LoadAsync" Hover="true" Striped="true"
+          OnRowClick="@(args => OpenUser(args.Item))" RowsPerPage="10">
+    <HeaderContent>
+        <MudTh>User name</MudTh>
+        <MudTh>Id</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="User name">@context.UserName</MudTd>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+<MudText Typo="Typo.caption">Server-side sorting and filtering are not implemented yet.</MudText>
