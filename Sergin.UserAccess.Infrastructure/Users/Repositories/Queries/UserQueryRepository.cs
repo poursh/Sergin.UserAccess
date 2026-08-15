@@ -39,6 +39,7 @@ internal sealed class UserQueryRepository(
 
             SELECT id, user_name AS userName
             FROM ua.users
+            ORDER BY id
             LIMIT @PageSize OFFSET @Offset;
             """;
 
