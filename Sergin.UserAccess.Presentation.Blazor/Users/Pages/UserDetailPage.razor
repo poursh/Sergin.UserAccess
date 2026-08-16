@@ -1,0 +1,21 @@
+@page "/ua/users/{Id:guid}"
+
+<PageTitle>User</PageTitle>
+
+<MudButton StartIcon="@Icons.Material.Filled.ArrowBack" Href="/ua/users" Class="mb-4">Back to users</MudButton>
+
+<SerginProblemPanel Problem="problem" />
+
+@if (user is not null)
+{
+    <MudCard>
+        <MudCardContent>
+            <MudText Typo="Typo.h5">@user.UserName</MudText>
+            <MudText Typo="Typo.body2">@user.Id</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Warning"
+                       Disabled="deactivating" OnClick="DeactivateAsync">Deactivate</MudButton>
+        </MudCardActions>
+    </MudCard>
+}

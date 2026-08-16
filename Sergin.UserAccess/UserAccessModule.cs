@@ -6,15 +6,20 @@ using Sergin.SharedKernel.Infrastructure.Data.EFCore;
 using Sergin.SharedKernel.Modules;
 using Sergin.UserAccess.Application;
 using Sergin.UserAccess.Infrastructure.Data;
+using Sergin.UserAccess.Presentation.Blazor;
 using Sergin.UserAccess.Users;
 
 namespace Sergin.UserAccess;
 
-public sealed class UserAccessModule : ISerginWebApiModule
+public sealed class UserAccessModule : ISerginWebApiModule, ISerginWebUiModule
 {
     public string Schema => UserAccessDbContext.Schema;
 
     public Assembly ApplicationAssembly => UserAccessApplicationAssemblyReference.Assembly;
+
+    public Assembly UiAssembly => UserAccessBlazorAssemblyReference.Assembly;
+
+    public IReadOnlyCollection<SerginNavItem> NavItems => UserAccessNavigation.Items;
 
     public void AddServices(IServiceCollection services, IConfigurationSection configuration)
     {

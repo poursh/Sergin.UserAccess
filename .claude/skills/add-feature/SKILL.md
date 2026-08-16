@@ -31,7 +31,7 @@ Same shape but under `Commands/<Feature>/` still (queries live in the `Commands`
 1. Check each new project's `GlobalUsings.cs` before adding `using` statements — many namespaces (`ErrorOr`, `Sergin.SharedKernel.*`) are already global.
 2. If the feature needs new/changed columns, add or update the `IEntityTypeConfiguration` in `Sergin.UserAccess.Infrastructure.Data`, then generate a migration **from the host repo's root** (this repo has no host of its own):
    ```
-   dotnet ef migrations add <Name> --project src/Modules/UserAccess/Sergin.UserAccess.Infrastructure.Data --startup-project src/Hosts/Sergin.Hosts.WebApi.All
+   dotnet ef migrations add <Name> --project src/Modules/UserAccess/Sergin.UserAccess.Infrastructure.Data --startup-project src/Hosts/Sergin.MeterMinder.Hosts.All
    ```
    (paths shown for the Sergin.MeterMinder host layout — adjust `--project`/`--startup-project` if this repo is ever embedded in a different host.)
 3. Build to confirm it compiles cleanly **from the host's solution file** — the build treats every analyzer/style warning as an error:
