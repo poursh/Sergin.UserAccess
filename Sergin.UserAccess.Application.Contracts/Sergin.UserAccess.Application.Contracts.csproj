@@ -2,6 +2,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\SharedKernel\Sergin.SharedKernel.Application\Sergin.SharedKernel.Application.csproj" />
     <ProjectReference Include="..\Sergin.UserAccess.Domain\Sergin.UserAccess.Domain.csproj" />
-    <ProjectReference Include="..\Sergin.UserAccess.Application.Contracts\Sergin.UserAccess.Application.Contracts.csproj" />
   </ItemGroup>
 </Project>
