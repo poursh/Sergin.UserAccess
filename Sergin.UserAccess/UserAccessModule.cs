@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sergin.SharedKernel.Infrastructure.Data.EFCore;
 using Sergin.SharedKernel.Modules;
 using Sergin.UserAccess.Application;
+using Sergin.UserAccess.Application.Contracts;
 using Sergin.UserAccess.Infrastructure.Data;
 using Sergin.UserAccess.Presentation.Blazor;
 using Sergin.UserAccess.Users;
@@ -16,6 +17,8 @@ public sealed class UserAccessModule : ISerginWebApiModule, ISerginWebUiModule
     public string Schema => UserAccessDbContext.Schema;
 
     public Assembly ApplicationAssembly => UserAccessApplicationAssemblyReference.Assembly;
+
+    public Assembly ContractsAssembly => UserAccessApplicationContractsAssemblyReference.Assembly;
 
     public Assembly UiAssembly => UserAccessBlazorAssemblyReference.Assembly;
 
