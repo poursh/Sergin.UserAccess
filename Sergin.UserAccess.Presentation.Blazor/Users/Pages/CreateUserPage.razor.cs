@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using Sergin.SharedKernel.Presentation.Blazor.Dispatching;
+using Sergin.SharedKernel.Application.Dispatching;
 using Sergin.SharedKernel.Presentation.Blazor.Errors;
 using Sergin.UserAccess.Application.Users.Commands.Create;
 using Sergin.UserAccess.Domain.Users;
@@ -14,7 +14,7 @@ public sealed partial class CreateUserPage
     private bool submitting;
 
     [Inject]
-    private ISerginUiDispatcher Dispatcher { get; set; } = default!;
+    private ISerginSender Sender { get; set; } = default!;
 
     [Inject]
     private IUiErrorPresenter ErrorPresenter { get; set; } = default!;
@@ -27,7 +27,7 @@ public sealed partial class CreateUserPage
         submitting = true;
 
         ErrorOr<CreateUserCommandResponse> result =
-            await Dispatcher.SendAsync(new CreateUserCommand(new UserName(model.UserName)));
+            await Sender.SendAsync(new CreateUserCommand(new UserName(model.UserName)));
 
         submitting = false;
 

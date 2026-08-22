@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using Sergin.SharedKernel.Presentation.Blazor.Dispatching;
+using Sergin.SharedKernel.Application.Dispatching;
 using Sergin.SharedKernel.Presentation.Blazor.Errors;
 using Sergin.SharedKernel.Presentation.Errors;
 using Sergin.UserAccess.Application.Users.Commands.DeactivateUser;
@@ -17,14 +17,14 @@ public sealed partial class UserDetailPage
     public Guid Id { get; set; }
 
     [Inject]
-    private ISerginUiDispatcher Dispatcher { get; set; } = default!;
+    private ISerginSender Sender { get; set; } = default!;
 
     [Inject]
     private IUiErrorPresenter ErrorPresenter { get; set; } = default!;
 
     protected override async Task OnParametersSetAsync()
     {
-        ErrorOr<UserQueryResponse> result = await Dispatcher.SendAsync(new GetUserByIdQueryCommand(Id));
+        ErrorOr<UserQueryResponse> result = await Sender.SendAsync(new GetUserByIdQueryCommand(Id));
 
         if (result.IsError)
         {
@@ -42,7 +42,7 @@ public sealed partial class UserDetailPage
     {
         deactivating = true;
 
-        ErrorOr<DeactivateUserCommandResponse> result = await Dispatcher.SendAsync(new DeactivateUserCommand(Id));
+        ErrorOr<DeactivateUserCommandResponse> result = await Sender.SendAsync(new DeactivateUserCommand(Id));
 
         deactivating = false;
 
