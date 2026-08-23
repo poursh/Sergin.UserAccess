@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Sergin.SharedKernel.Presentation.Blazor.Dispatching;
 using Sergin.SharedKernel.Presentation.Blazor.Errors;
 using Sergin.SharedKernel.Presentation.Errors;
 using Sergin.UserAccess.Application.Users.Commands.DeactivateUser;
@@ -17,7 +16,7 @@ public sealed partial class UserDetailPage
     public Guid Id { get; set; }
 
     [Inject]
-    private ISerginUiDispatcher Dispatcher { get; set; } = default!;
+    private ISerginDispatcher Dispatcher { get; set; } = default!;
 
     [Inject]
     private IUiErrorPresenter ErrorPresenter { get; set; } = default!;

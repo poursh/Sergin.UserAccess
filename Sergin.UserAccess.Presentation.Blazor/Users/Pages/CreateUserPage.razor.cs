@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Sergin.SharedKernel.Presentation.Blazor.Dispatching;
 using Sergin.SharedKernel.Presentation.Blazor.Errors;
 using Sergin.UserAccess.Application.Users.Commands.Create;
 using Sergin.UserAccess.Domain.Users;
@@ -14,7 +13,7 @@ public sealed partial class CreateUserPage
     private bool submitting;
 
     [Inject]
-    private ISerginUiDispatcher Dispatcher { get; set; } = default!;
+    private ISerginDispatcher Dispatcher { get; set; } = default!;
 
     [Inject]
     private IUiErrorPresenter ErrorPresenter { get; set; } = default!;
