@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Sergin.SharedKernel.Application.Dispatching;
 using Sergin.UserAccess.Application.Users.Commands.GetOne;
 using Sergin.SharedKernel.Presentation.WebApi.Endpoints.Results;
 
@@ -11,9 +10,9 @@ internal class GetUserEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder routeBuilder)
     {
-        routeBuilder.MapGet("/users/{userId:guid}", async ([FromRoute] Guid userId, ISerginSender sender) =>
+        routeBuilder.MapGet("/users/{userId:guid}", async ([FromRoute] Guid userId, ISender sender) =>
         {
-            ErrorOr<UserQueryResponse> res = await sender.SendAsync(new GetUserByIdQueryCommand(userId));
+            ErrorOr<UserQueryResponse> res = await sender.Send(new GetUserByIdQueryCommand(userId));
 
             return res.ToApiResult();
         });
