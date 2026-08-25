@@ -14,7 +14,7 @@ internal class GetUserListEndpoint : IEndpoint
             .MapGet("/users", async ([AsParameters] ListQueryRequestModel request, ISender sender) =>
             {
                 ErrorOr<ListQueryResponse<GetUserListItem>> res = await sender.Send(
-                    request.ToListQuery<GetUserListItem>());
+                    new GetUserListQueryCommand(request.ToPaggination(), request.Term, request.Filtering, request.Sorting));
 
                 return res.ToApiResult();
             })

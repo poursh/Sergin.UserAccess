@@ -20,7 +20,8 @@ public sealed partial class UserListPage
     {
         // MudBlazor's TableState.Page is 0-based; Sergin's PageIndex is 1-based.
         ErrorOr<ListQueryResponse<GetUserListItem>> result =
-            await Dispatcher.SendListAsync<GetUserListItem>(state.PageSize, state.Page + 1, cancellationToken);
+            await Dispatcher.SendAsync(
+                new GetUserListQueryCommand(Paggination.Create(state.PageSize, state.Page + 1)), cancellationToken);
 
         if (result.IsError)
         {
