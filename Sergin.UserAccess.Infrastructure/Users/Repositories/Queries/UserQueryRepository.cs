@@ -29,7 +29,7 @@ internal sealed class UserQueryRepository(
     }
 
     public async Task<ListQueryResponse<GetUserListItem>> GetListAsync(
-        ListQuery<GetUserListItem> query, CancellationToken cancellationToken = default)
+        ListQuery query, CancellationToken cancellationToken = default)
     {
         using DbConnection connection = await connectionFactory.CreateConnectionAsync();
 
