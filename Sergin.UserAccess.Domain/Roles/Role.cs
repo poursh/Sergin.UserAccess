@@ -1,4 +1,5 @@
 using Sergin.SharedKernel.Domain;
+using Sergin.SharedKernel.Domain.Securities;
 
 namespace Sergin.UserAccess.Domain.Roles;
 
@@ -8,7 +9,7 @@ namespace Sergin.UserAccess.Domain.Roles;
 /// </summary>
 public class Role : AggregateRoot<RoleId>
 {
-    private readonly List<PermissionCode> permissions = [];
+    private readonly List<Permission> permissions = [];
 
     private Role() { }
 
@@ -20,9 +21,9 @@ public class Role : AggregateRoot<RoleId>
 
     public RoleName Name { get; private set; }
 
-    public IReadOnlyCollection<PermissionCode> Permissions => permissions;
+    public IReadOnlyCollection<Permission> Permissions => permissions;
 
-    public static Role Create(RoleName name, IEnumerable<PermissionCode> permissions)
+    public static Role Create(RoleName name, IEnumerable<Permission> permissions)
     {
         Role role = new()
         {
@@ -30,7 +31,7 @@ public class Role : AggregateRoot<RoleId>
             Name = name
         };
 
-        foreach (PermissionCode permission in permissions)
+        foreach (Permission permission in permissions)
         {
             role.Grant(permission);
         }
@@ -38,7 +39,7 @@ public class Role : AggregateRoot<RoleId>
         return role;
     }
 
-    public void Grant(PermissionCode permission)
+    public void Grant(Permission permission)
     {
         if (!permissions.Contains(permission))
         {
@@ -46,16 +47,9 @@ public class Role : AggregateRoot<RoleId>
         }
     }
 
-    public void Revoke(PermissionCode permission) => permissions.Remove(permission);
+    public void Revoke(Permission permission) => permissions.Remove(permission);
 }
 
 public sealed record RoleId(Guid Value);
 
 public sealed record RoleName(string Value);
-
-/// <summary>
-/// A permission string as stored. Deliberately not <c>Sergin.SharedKernel.Application.Securities.Permission</c>:
-/// that type lives in the Application layer and a Domain project references only SharedKernel.Domain.
-/// The Application layer validates a code through <c>Permission.Create</c> on the way in.
-/// </summary>
-public sealed record PermissionCode(string Value);

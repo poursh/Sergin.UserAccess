@@ -1,5 +1,5 @@
-using Sergin.SharedKernel.Application.Commands;
-using Sergin.SharedKernel.Application.Securities;
+﻿using Sergin.SharedKernel.Application.Commands;
+using Sergin.SharedKernel.Domain.Securities;
 using Sergin.UserAccess.Domain.Roles;
 using Sergin.UserAccess.Domain.Users;
 

@@ -96,7 +96,7 @@ partial class AddRolesAndExternalIdentity
 
         modelBuilder.Entity("Sergin.UserAccess.Domain.Roles.Role", b =>
             {
-                b.OwnsMany("Sergin.UserAccess.Domain.Roles.PermissionCode", "Permissions", b1 =>
+                b.OwnsMany("Sergin.SharedKernel.Domain.Securities.Permission", "Permissions", b1 =>
                     {
                         b1.Property<Guid>("role_id")
                             .HasColumnType("uuid")

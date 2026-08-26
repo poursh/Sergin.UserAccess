@@ -1,4 +1,4 @@
-using Sergin.SharedKernel.Application.Securities;
+﻿using Sergin.SharedKernel.Domain.Securities;
 
 namespace Sergin.UserAccess.Application.Users.Commands.ProvisionExternalUser;
 

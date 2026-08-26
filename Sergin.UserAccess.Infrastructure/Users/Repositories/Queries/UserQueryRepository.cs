@@ -1,11 +1,11 @@
-using System.Data.Common;
+﻿using System.Data.Common;
 using Sergin.UserAccess.Application.Users;
 using Sergin.UserAccess.Application.Users.Commands.GetList;
 using Sergin.SharedKernel.Application;
 using Sergin.SharedKernel.Application.Commands.Queries;
 using Sergin.SharedKernel.Infrastracture.Data;
 using Sergin.UserAccess.Application.Users.Commands.GetOne;
-using Sergin.SharedKernel.Application.Securities;
+using Sergin.SharedKernel.Domain.Securities;
 using Sergin.UserAccess.Domain.Users;
 
 namespace Sergin.UserAccess.Infrastructure.Users.Repositories.Queries;
