@@ -4,4 +4,6 @@ namespace Sergin.UserAccess.Domain.Users;
 public interface IUserRepository : IRepository<User, UserInternalId>
 {
     Task<User?> GetByUserName(UserName userName, CancellationToken cancellationToken = default);
+
+    Task<User?> GetByExternalId(ExternalUserId externalId, CancellationToken cancellationToken = default);
 }

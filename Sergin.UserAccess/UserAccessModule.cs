@@ -8,6 +8,7 @@ using Sergin.UserAccess.Application;
 using Sergin.UserAccess.Application.Contracts;
 using Sergin.UserAccess.Infrastructure.Data;
 using Sergin.UserAccess.Presentation.Blazor;
+using Sergin.UserAccess.Roles;
 using Sergin.UserAccess.Users;
 
 namespace Sergin.UserAccess;
@@ -29,6 +30,8 @@ public sealed class UserAccessModule : ISerginWebApiModule, ISerginWebUiModule
         services.AddModuleDbContext<UserAccessDbContext, IUserAccessDbContext, IUserAccessUnitOfWork>(configuration, UserAccessDbContext.Schema);
 
         services.AddUserDependencies();
+
+        services.AddRoleDependencies();
     }
 
     public Task MigrateAsync(IServiceProvider services) => services.MigrateDbContextAsync<UserAccessDbContext>();

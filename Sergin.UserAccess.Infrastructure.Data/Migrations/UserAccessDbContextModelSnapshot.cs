@@ -18,10 +18,32 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("ua")
-                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("ProductVersion", "10.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Sergin.UserAccess.Domain.Roles.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_roles");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_roles_name");
+
+                    b.ToTable("roles", "ua");
+                });
 
             modelBuilder.Entity("Sergin.UserAccess.Domain.Users.User", b =>
                 {
@@ -29,9 +51,31 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("Email")
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("ExternalId")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("external_id");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("first_name");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("last_name");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -41,7 +85,62 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_users");
 
+                    b.HasIndex("ExternalId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_external_id");
+
                     b.ToTable("users", "ua");
+                });
+
+            modelBuilder.Entity("Sergin.UserAccess.Domain.Roles.Role", b =>
+                {
+                    b.OwnsMany("Sergin.SharedKernel.Domain.Securities.Permission", "Permissions", b1 =>
+                        {
+                            b1.Property<Guid>("role_id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("role_id");
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(300)
+                                .HasColumnType("character varying(300)")
+                                .HasColumnName("permission");
+
+                            b1.HasKey("role_id", "Value")
+                                .HasName("pk_role_permissions");
+
+                            b1.ToTable("role_permissions", "ua");
+
+                            b1.WithOwner()
+                                .HasForeignKey("role_id")
+                                .HasConstraintName("fk_role_permissions_roles_role_id");
+                        });
+
+                    b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("Sergin.UserAccess.Domain.Users.User", b =>
+                {
+                    b.OwnsMany("Sergin.UserAccess.Domain.Users.UserRole", "Roles", b1 =>
+                        {
+                            b1.Property<Guid>("user_id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("user_id");
+
+                            b1.Property<Guid>("RoleId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("role_id");
+
+                            b1.HasKey("user_id", "RoleId")
+                                .HasName("pk_user_roles");
+
+                            b1.ToTable("user_roles", "ua");
+
+                            b1.WithOwner()
+                                .HasForeignKey("user_id")
+                                .HasConstraintName("fk_user_roles_users_user_id");
+                        });
+
+                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }

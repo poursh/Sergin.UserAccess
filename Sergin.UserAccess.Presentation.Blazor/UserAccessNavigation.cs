@@ -7,6 +7,11 @@ public static class UserAccessNavigation
 {
     public static IReadOnlyCollection<SerginNavItem> Items { get; } =
     [
-        new SerginNavItem("Users", "/ua/users", Icons.Material.Filled.People, Order: 200)
+        new SerginNavItem(
+            "Users",
+            "/ua/users",
+            Icons.Material.Filled.People,
+            Order: 200,
+            RequiredPermission: "permission.ua.users.read")
     ];
 }
