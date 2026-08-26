@@ -5,6 +5,7 @@ using Sergin.SharedKernel.Application;
 using Sergin.SharedKernel.Application.Commands.Queries;
 using Sergin.SharedKernel.Infrastracture.Data;
 using Sergin.UserAccess.Application.Users.Commands.GetOne;
+using Sergin.SharedKernel.Application.Securities;
 using Sergin.UserAccess.Domain.Users;
 
 namespace Sergin.UserAccess.Infrastructure.Users.Repositories.Queries;
@@ -26,6 +27,27 @@ internal sealed class UserQueryRepository(
 
         return await connection.QuerySingleOrDefaultAsync<UserQueryResponse>(
             queries, new { Id = Id.Value });
+    }
+
+    public async Task<IReadOnlyCollection<Permission>> GetPermissions(
+        UserInternalId userId, CancellationToken cancellationToken = default)
+    {
+        using DbConnection connection = await connectionFactory.CreateConnectionAsync();
+
+        string queries =
+            """
+            SELECT DISTINCT rp.permission
+            FROM ua.user_roles ur
+            JOIN ua.role_permissions rp ON rp.role_id = ur.role_id
+            WHERE ur.user_id = @UserId;
+            """;
+
+        IEnumerable<string> codes = await connection.QueryAsync<string>(queries, new { UserId = userId.Value });
+
+        // A code that no longer parses is a permission the format outgrew; dropping it narrows the
+        // user's rights, which is the safe direction, rather than failing their sign-in outright.
+        return [.. codes.Select(code => Permission.TryCreate(code, out Permission? permission) ? permission : null)
+            .OfType<Permission>()];
     }
 
     public async Task<ListQueryResponse<GetUserListItem>> GetListAsync(
