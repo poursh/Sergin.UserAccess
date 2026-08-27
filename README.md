@@ -1,6 +1,16 @@
 # Sergin.UserAccess
 
-The UserAccess module (schema `ua`) for the [Sergin](https://github.com/poursh/Sergin.MeterMinder) platform, whose **MeterMinder** module is a Head-End System (HES) for smart electricity/gas/water meters. Owns user identity/access — currently the `Users` aggregate.
+The UserAccess module (schema `ua`) for the [Sergin](https://github.com/poursh/Sergin.MeterMinder) platform, whose **MeterMinder** module is a Head-End System (HES) for smart electricity/gas/water meters. Owns user identity and access: the `Users` and `Roles` aggregates, and the permission set the rest of the platform authorizes against.
+
+It is also the module that turns an external sign-in into a Sergin user. It implements SharedKernel's
+`IExternalIdentityResolver`, which the host calls during the OpenID Connect callback: an unseen provider
+`sub` gets a `ua.users` row and the seeded `viewer` role, and the resolver hands back that user's permissions
+for the host to stamp into the auth cookie as claims. Keycloak authenticates; **this module authorizes**.
+The migration seeds the `administrator` and `viewer` roles; there is no role-administration UI yet, so
+changing who holds which role means editing `ua.user_roles` directly.
+
+Feature slices today: `Users/Commands/{Create, GetOne, GetList, DeactivateUser, ProvisionExternalUser}`,
+plus the Blazor pages for them under `Sergin.UserAccess.Presentation.Blazor`.
 
 ## This repo is embed-only — it does not build standalone
 
