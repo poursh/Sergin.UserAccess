@@ -20,6 +20,12 @@ public class User : AggregateRoot<UserInternalId>
 
     public EmailAddress? Email { get; private set; }
 
+    /// <summary>
+    /// Column width of <see cref="FirstName"/> and <see cref="LastName"/>; what the provisioning validator
+    /// and the EF configuration both read, so the limit is stated once.
+    /// </summary>
+    public const int NameMaxLength = 200;
+
     public string FirstName { get; private set; } = string.Empty;
 
     public string LastName { get; private set; } = string.Empty;
@@ -85,12 +91,24 @@ public class User : AggregateRoot<UserInternalId>
 }
 
 public sealed record UserInternalId(Guid Value);
-public sealed record UserName(string Value);
+
+// MaxLength constants: the one number a command validator, a Blazor form model's [StringLength] and an
+// EF HasMaxLength all read, so a limit is never repeated as a literal in three places.
+public sealed record UserName(string Value)
+{
+    public const int MaxLength = 100;
+}
 
 /// <summary>The identity provider's stable subject identifier — Keycloak's <c>sub</c>.</summary>
-public sealed record ExternalUserId(string Value);
+public sealed record ExternalUserId(string Value)
+{
+    public const int MaxLength = 200;
+}
 
-public sealed record EmailAddress(string Value);
+public sealed record EmailAddress(string Value)
+{
+    public const int MaxLength = 320;
+}
 
 /// <summary>One row of the user-to-role assignment, owned by the user.</summary>
 public sealed record UserRole(RoleId RoleId);
