@@ -21,6 +21,9 @@ internal sealed class UserEntityTypeConfiguration : IEntityTypeConfiguration<Use
         builder.Property(u => u.UserName)
             .HasConversion<UserNameConverter>();
 
+        // IUserRepository declares UserName an alternate key; the validator's check is advisory, this is the guarantee.
+        builder.HasIndex(u => u.UserName).IsUnique();
+
         // Nullable: rows created before external sign-in existed have no subject, and User.Create still
         // makes one without a provider. Unique, so two Keycloak users cannot collapse onto one account.
         builder.Property(u => u.ExternalId)
