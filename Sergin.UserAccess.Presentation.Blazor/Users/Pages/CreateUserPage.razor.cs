@@ -32,7 +32,8 @@ public sealed partial class CreateUserPage
 
         if (result.IsError)
         {
-            ErrorPresenter.Notify(result.FirstError);
+            // Every error, not the first: validation yields one per broken rule.
+            ErrorPresenter.Notify(result.Errors);
 
             return;
         }

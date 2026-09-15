@@ -25,16 +25,16 @@ internal sealed class UserEntityTypeConfiguration : IEntityTypeConfiguration<Use
         // makes one without a provider. Unique, so two Keycloak users cannot collapse onto one account.
         builder.Property(u => u.ExternalId)
             .HasConversion<ExternalUserIdConverter>()
-            .HasMaxLength(200);
+            .HasMaxLength(ExternalUserId.MaxLength);
 
         builder.HasIndex(u => u.ExternalId).IsUnique();
 
         builder.Property(u => u.Email)
             .HasConversion<EmailAddressConverter>()
-            .HasMaxLength(320);
+            .HasMaxLength(EmailAddress.MaxLength);
 
-        builder.Property(u => u.FirstName).HasMaxLength(200);
-        builder.Property(u => u.LastName).HasMaxLength(200);
+        builder.Property(u => u.FirstName).HasMaxLength(User.NameMaxLength);
+        builder.Property(u => u.LastName).HasMaxLength(User.NameMaxLength);
 
         builder.OwnsMany(u => u.Roles, role =>
         {
