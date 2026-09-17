@@ -21,6 +21,14 @@ public sealed partial class UserDetailPage
     [Inject]
     private IUiErrorPresenter ErrorPresenter { get; set; } = default!;
 
+    // A property, not a field: the tail is the page title's word until the load fills in the user name, and
+    // on the not-found path it stays that way beside the problem panel.
+    private IReadOnlyList<SerginBreadcrumb> Trail =>
+    [
+        SerginBreadcrumb.Of(UserAccessNavigation.Users),
+        new(user?.UserName ?? "User"),
+    ];
+
     protected override async Task OnParametersSetAsync()
     {
         ErrorOr<UserQueryResponse> result = await Dispatcher.SendAsync(new GetUserByIdQueryCommand(Id));
