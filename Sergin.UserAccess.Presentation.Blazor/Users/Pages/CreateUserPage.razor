@@ -4,17 +4,16 @@
 
 <MudText Typo="Typo.h4" Class="mb-4">New user</MudText>
 
-<EditForm Model="model" OnValidSubmit="SubmitAsync">
-    <DataAnnotationsValidator />
-
+<MudForm @ref="form" Model="model" Validation="@validation" @bind-IsValid="isValid"
+         SuppressImplicitSubmission="false" onsubmit="@OnSubmit">
     <MudCard>
         <MudCardContent>
-            <MudTextField @bind-Value="model.UserName" Label="User name" For="@(() => model.UserName)" />
+            <MudTextField @bind-Value="model.UserName" Label="User name" For="@(() => model.UserName)" Immediate="true" />
         </MudCardContent>
         <MudCardActions>
             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
-                       Color="Color.Primary" Disabled="submitting">Create</MudButton>
+                       Color="Color.Primary" Disabled="@(submitting || !isValid)">Create</MudButton>
             <MudButton Href="/ua/users">Cancel</MudButton>
         </MudCardActions>
     </MudCard>
-</EditForm>
+</MudForm>
