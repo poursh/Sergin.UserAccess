@@ -7,6 +7,8 @@ namespace Sergin.UserAccess.Presentation.Blazor.Users.Pages;
 
 public sealed partial class UserListPage
 {
+    private IReadOnlyList<SerginBreadcrumb> Trail { get; } = [SerginBreadcrumb.Of(UserAccessNavigation.Users)];
+
     [Inject]
     private ISerginDispatcher Dispatcher { get; set; } = default!;
 

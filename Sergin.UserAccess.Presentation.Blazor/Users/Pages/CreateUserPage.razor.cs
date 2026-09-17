@@ -16,6 +16,12 @@ public sealed partial class CreateUserPage
     private bool submitting;
     private Func<object, string, Task<IEnumerable<string>>> validation = default!;
 
+    private IReadOnlyList<SerginBreadcrumb> Trail { get; } =
+    [
+        SerginBreadcrumb.Of(UserAccessNavigation.Users),
+        new("New user"),
+    ];
+
     [Inject]
     private ISerginDispatcher Dispatcher { get; set; } = default!;
 
