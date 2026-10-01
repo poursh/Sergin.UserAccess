@@ -1,9 +1,7 @@
 using Sergin.SharedKernel.Application.Commands.Queries;
-using Sergin.SharedKernel.Application.Securities.Authorization;
 
 namespace Sergin.UserAccess.Application.Contracts.Users.Commands.GetList;
 
-[RequiredPermissions("permission.ua.users.read")]
 public sealed record GetUserListQueryCommand : ListQuery<GetUserListItem>
 {
     public GetUserListQueryCommand(

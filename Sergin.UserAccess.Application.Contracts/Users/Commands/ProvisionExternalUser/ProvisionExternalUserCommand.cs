@@ -8,7 +8,7 @@ namespace Sergin.UserAccess.Application.Contracts.Users.Commands.ProvisionExtern
 /// that user may do.
 /// </summary>
 /// <remarks>
-/// Carries no <c>[RequiredPermissions]</c> on purpose, and must not gain one: it runs inside the OIDC
+/// Has no <c>ICommandConfiguration</c> on purpose, and must not gain one: it runs inside the OIDC
 /// callback, before sign-in completes, when the ambient user context is still anonymous. Requiring a
 /// permission here would make every login fail.
 /// </remarks>
