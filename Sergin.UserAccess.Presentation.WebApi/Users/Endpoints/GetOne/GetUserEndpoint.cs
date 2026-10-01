@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Sergin.UserAccess.Application.Users.Commands.GetOne;
+using Sergin.UserAccess.Application.Contracts.Users.Commands.GetOne;
 using Sergin.SharedKernel.Presentation.WebApi.Endpoints.Results;
 
 namespace Sergin.UserAccess.Presentation.WebApi.Users.Endpoints.GetOne;

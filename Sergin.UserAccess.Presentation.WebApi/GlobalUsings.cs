@@ -3,3 +3,8 @@ global using MediatR;
 global using Sergin.SharedKernel.Presentation;
 global using Sergin.SharedKernel.Presentation.WebApi;
 global using Sergin.SharedKernel.Presentation.WebApi.Endpoints;
+global using Sergin.UserAccess.Application.Contracts.Users.Commands.Create;
+global using Sergin.UserAccess.Application.Contracts.Users.Commands.DeactivateUser;
+global using Sergin.UserAccess.Application.Contracts.Users.Commands.GetList;
+global using Sergin.UserAccess.Application.Contracts.Users.Commands.GetOne;
+global using Sergin.UserAccess.Application.Contracts.Users.Commands.ProvisionExternalUser;

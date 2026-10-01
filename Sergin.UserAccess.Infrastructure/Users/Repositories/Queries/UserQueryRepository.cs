@@ -1,10 +1,10 @@
 ﻿using System.Data.Common;
 using Sergin.UserAccess.Application.Users;
-using Sergin.UserAccess.Application.Users.Commands.GetList;
+using Sergin.UserAccess.Application.Contracts.Users.Commands.GetList;
 using Sergin.SharedKernel.Application;
 using Sergin.SharedKernel.Application.Commands.Queries;
 using Sergin.SharedKernel.Infrastracture.Data;
-using Sergin.UserAccess.Application.Users.Commands.GetOne;
+using Sergin.UserAccess.Application.Contracts.Users.Commands.GetOne;
 using Sergin.SharedKernel.Domain.Securities;
 using Sergin.UserAccess.Domain.Users;
 

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Sergin.SharedKernel.Presentation.Blazor.Errors;
-using Sergin.UserAccess.Application.Users.Commands.GetList;
+using Sergin.UserAccess.Application.Contracts.Users.Commands.GetList;
 
 namespace Sergin.UserAccess.Presentation.Blazor.Users.Pages;
 

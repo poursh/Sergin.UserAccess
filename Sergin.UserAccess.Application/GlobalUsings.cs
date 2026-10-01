@@ -2,3 +2,8 @@ global using ErrorOr;
 global using Sergin.SharedKernel.Domain;
 global using Sergin.SharedKernel.Application;
 global using Sergin.UserAccess.Domain;
+global using Sergin.UserAccess.Application.Contracts.Users.Commands.Create;
+global using Sergin.UserAccess.Application.Contracts.Users.Commands.DeactivateUser;
+global using Sergin.UserAccess.Application.Contracts.Users.Commands.GetList;
+global using Sergin.UserAccess.Application.Contracts.Users.Commands.GetOne;
+global using Sergin.UserAccess.Application.Contracts.Users.Commands.ProvisionExternalUser;

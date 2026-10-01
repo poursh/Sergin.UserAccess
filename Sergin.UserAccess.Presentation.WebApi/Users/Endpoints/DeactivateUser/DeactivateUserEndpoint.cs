@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Sergin.UserAccess.Application.Users.Commands.DeactivateUser;
+using Sergin.UserAccess.Application.Contracts.Users.Commands.DeactivateUser;
 using Sergin.SharedKernel.Presentation.WebApi.Endpoints.Results;
 
 namespace Sergin.UserAccess.Presentation.WebApi.Users.Endpoints.DeactivateUser;

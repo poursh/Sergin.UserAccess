@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using Sergin.SharedKernel.Presentation.Blazor.Errors;
 using Sergin.SharedKernel.Presentation.Errors;
-using Sergin.UserAccess.Application.Users.Commands.DeactivateUser;
-using Sergin.UserAccess.Application.Users.Commands.GetOne;
+using Sergin.UserAccess.Application.Contracts.Users.Commands.DeactivateUser;
+using Sergin.UserAccess.Application.Contracts.Users.Commands.GetOne;
 
 namespace Sergin.UserAccess.Presentation.Blazor.Users.Pages;
 

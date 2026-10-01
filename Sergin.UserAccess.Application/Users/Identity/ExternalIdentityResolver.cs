@@ -1,6 +1,6 @@
 using MediatR;
 using Sergin.SharedKernel.Application.Securities.Users;
-using Sergin.UserAccess.Application.Users.Commands.ProvisionExternalUser;
+using Sergin.UserAccess.Application.Contracts.Users.Commands.ProvisionExternalUser;
 using Sergin.UserAccess.Domain.Users;
 
 namespace Sergin.UserAccess.Application.Users.Identity;
