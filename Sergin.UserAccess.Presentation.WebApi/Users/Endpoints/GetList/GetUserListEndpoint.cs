@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Sergin.UserAccess.Application.Users.Commands.GetList;
+using Sergin.UserAccess.Application.Contracts.Users.Commands.GetList;
 using Sergin.SharedKernel.Application;
 using Sergin.SharedKernel.Presentation.WebApi.Endpoints.Results;
 

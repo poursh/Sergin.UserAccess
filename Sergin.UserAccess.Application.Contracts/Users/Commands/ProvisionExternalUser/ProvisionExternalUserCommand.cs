@@ -1,7 +1,7 @@
 using Sergin.SharedKernel.Application.Commands;
 using Sergin.UserAccess.Domain.Users;
 
-namespace Sergin.UserAccess.Application.Users.Commands.ProvisionExternalUser;
+namespace Sergin.UserAccess.Application.Contracts.Users.Commands.ProvisionExternalUser;
 
 /// <summary>
 /// Find-or-create the local user for an identity the provider just authenticated, and answer with what

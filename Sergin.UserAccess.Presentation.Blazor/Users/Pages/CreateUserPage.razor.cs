@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Sergin.SharedKernel.Presentation.Blazor.Errors;
-using Sergin.UserAccess.Application.Users.Commands.Create;
+using Sergin.UserAccess.Application.Contracts.Users.Commands.Create;
 using Sergin.UserAccess.Domain.Users;
 using Sergin.UserAccess.Presentation.Blazor.Users.Models;
 
