@@ -24,7 +24,19 @@ Note: this repo is embed-only (see `README.md`) — it's edited from inside what
 7. If a new repository interface/dependency is needed, register it in the same file's `Add<Aggregate>Dependencies` (`services.AddTransient<IFoo, Foo>()`).
 
 **Query** (read-side, bypasses EF):
-Same shape but under `Commands/<Feature>/` still (queries live in the `Commands` folder alongside commands — match that, don't invent a `Queries` folder), implementing `IQuery<TResponse>` / `IQueryHandler<TQuery, TResponse>` from `Sergin.SharedKernel.Application.Commands.Queries`. The handler depends on a dedicated `I<Feature>QueryRepository` interface (returns nullable response, handler maps null to `Error.NotFound()`). Implement that interface in `Sergin.UserAccess.Infrastructure/<Aggregate>/Repositories/Queries/<Aggregate>QueryRepository.cs` using `IDbConnectionFactory` + raw SQL against the `ua` schema (see `UserQueryRepository.cs` for the `QuerySingleOrDefaultAsync`/`QueryMultipleAsync` Dapper-style pattern) — never use EF Core for reads. If the query needs authorization, add `[RequiredPermissions("permission.ua.<resource>.<action>")]` on the query record.
+Same shape but under `Commands/<Feature>/` still (queries live in the `Commands` folder alongside commands — match that, don't invent a `Queries` folder), implementing `IQuery<TResponse>` / `IQueryHandler<TQuery, TResponse>` from `Sergin.SharedKernel.Application.Commands.Queries`. The handler depends on a dedicated `I<Feature>QueryRepository` interface (returns nullable response, handler maps null to `Error.NotFound()`). Implement that interface in `Sergin.UserAccess.Infrastructure/<Aggregate>/Repositories/Queries/<Aggregate>QueryRepository.cs` using `IDbConnectionFactory` + raw SQL against the `ua` schema (see `UserQueryRepository.cs` for the `QuerySingleOrDefaultAsync`/`QueryMultipleAsync` Dapper-style pattern) — never use EF Core for reads. If the query needs authorization, add `<RecordName>Configuration.cs` next to the record (`internal sealed class … : ICommandConfiguration<<RecordName>>`, calling `RequirePermissions(...)` and, for a guarded write, `RequireExpectedVersion()`) in `.Application.Contracts`, beside the query record. Template (a guarded write from DeviceManagement; a query calls only `RequirePermissions("permission.ua.<resource>.<action>")`):
+
+```csharp
+using Sergin.SharedKernel.Application.Commands.Configuration;
+
+namespace Sergin.MeterMinder.DeviceManagement.Application.Contracts.Devices.Commands.Update;
+
+internal sealed class UpdateDeviceCommandConfiguration : ICommandConfiguration<UpdateDeviceCommand>
+{
+    public void Configure(CommandConfigurationBuilder<UpdateDeviceCommand> builder) =>
+        builder.RequirePermissions("permission.dm.devices.update").RequireExpectedVersion();
+}
+```
 
 ## After scaffolding
 

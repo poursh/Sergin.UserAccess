@@ -17,7 +17,7 @@ Sergin is a .NET 10 modular monolith whose **MeterMinder** module is a head-end 
 2. reads that user's permissions out of `ua.role_permissions`;
 3. hands them back for the host to stamp into the auth cookie as `sergin:permission` claims.
 
-A permission check afterwards reads claims only — no database work — so a change to someone's roles takes effect at their next sign-in. Provisioning runs as an ordinary feature slice (`ProvisionExternalUserCommand`) through the same unit of work and pipeline as everything else, with one rule: **it must never carry `[RequiredPermissions]`**, because it runs before sign-in completes, when the caller is still anonymous.
+A permission check afterwards reads claims only — no database work — so a change to someone's roles takes effect at their next sign-in. Provisioning runs as an ordinary feature slice (`ProvisionExternalUserCommand`) through the same unit of work and pipeline as everything else, with one rule: **it must never get a configuration requiring a permission**, because it runs before sign-in completes, when the caller is still anonymous.
 
 ### Aggregates
 
