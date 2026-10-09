@@ -6,6 +6,7 @@ using Sergin.SharedKernel.Application.Commands.Queries;
 using Sergin.SharedKernel.Infrastracture.Data;
 using Sergin.UserAccess.Application.Contracts.Users.Commands.GetOne;
 using Sergin.SharedKernel.Domain.Securities;
+using Sergin.UserAccess.Domain.Scopes;
 using Sergin.UserAccess.Domain.Users;
 
 namespace Sergin.UserAccess.Infrastructure.Users.Repositories.Queries;
@@ -37,12 +38,24 @@ internal sealed class UserQueryRepository(
         string queries =
             """
             SELECT DISTINCT rp.permission
-            FROM ua.user_roles ur
-            JOIN ua.role_permissions rp ON rp.role_id = ur.role_id
-            WHERE ur.user_id = @UserId;
+            FROM ua.role_assignments a
+            JOIN ua.users u ON u.id = a.user_id AND u.is_active
+            JOIN ua.roles r ON r.id = a.role_id AND r.deleted_at_utc IS NULL
+            JOIN ua.role_permissions rp ON rp.role_id = a.role_id
+            WHERE a.user_id = @UserId
+              AND a.scope_id = @RootId
+              AND a.include_subtree
+              AND a.revoked_at_utc IS NULL
+              AND a.valid_until_utc IS NULL
+              AND (a.valid_from_utc IS NULL OR a.valid_from_utc <= now());
             """;
 
-        IEnumerable<string> codes = await connection.QueryAsync<string>(queries, new { UserId = userId.Value });
+        // Global permissions only, those effective on every scope: a root assignment over the whole tree. They
+        // become the sign-in claims, which outlive the request, so a time-bound assignment is left out: it would
+        // stay in the cookie past its end. Scoped and time-bound grants are answered live by the scoped check.
+        // An inactive user gets none (FR-13).
+        IEnumerable<string> codes = await connection.QueryAsync<string>(
+            queries, new { UserId = userId.Value, RootId = Scope.RootId.Value });
 
         // A code that no longer parses is a permission the format outgrew; dropping it narrows the
         // user's rights, which is the safe direction, rather than failing their sign-in outright.

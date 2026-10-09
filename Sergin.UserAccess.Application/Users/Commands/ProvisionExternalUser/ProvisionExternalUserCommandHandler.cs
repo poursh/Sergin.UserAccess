@@ -1,6 +1,7 @@
 ﻿using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Domain.Securities;
 using Sergin.UserAccess.Domain.Roles;
+using Sergin.UserAccess.Domain.Scopes;
 using Sergin.UserAccess.Domain.Users;
 
 namespace Sergin.UserAccess.Application.Users.Commands.ProvisionExternalUser;
@@ -50,15 +51,16 @@ internal sealed class ProvisionExternalUserCommandHandler(
 
     /// <summary>
     /// A brand-new user with no roles would sign in successfully and then see nothing, with no screen in
-    /// the product to fix it. The default role is seeded by migration for exactly this.
+    /// the product to fix it. The default role is seeded by migration for exactly this: owned by the root scope
+    /// and inheritable, and given at the root over the whole tree, so it is a global grant.
     /// </summary>
     private async Task AssignDefaultRole(User user, CancellationToken cancellationToken)
     {
-        Role? defaultRole = await roleRepository.GetByName(new RoleName(Role.DefaultRoleName), cancellationToken);
+        Role? defaultRole = await roleRepository.GetByName(Scope.RootId, new RoleName(Role.DefaultRoleName), cancellationToken);
 
         if (defaultRole is not null)
         {
-            user.AssignRole(defaultRole.Id);
+            user.AssignGlobalRole(defaultRole);
         }
     }
 }

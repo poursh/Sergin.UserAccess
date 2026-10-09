@@ -1,0 +1,23 @@
+using Microsoft.Extensions.DependencyInjection;
+using Sergin.SharedKernel.Application.Securities.Authorization;
+using Sergin.UserAccess.Application.Authorization;
+using Sergin.UserAccess.Infrastructure.Authorization;
+
+namespace Sergin.UserAccess.Authorization;
+
+internal static class AuthorizationInstallationExtensions
+{
+    internal static IServiceCollection AddAuthorizationDependencies(this IServiceCollection services)
+    {
+        // One cache per process, invalidated through the same instance every write handler reaches.
+        services.AddSingleton<EffectiveGrantCache>();
+        services.AddSingleton<IAuthorizationCacheInvalidator>(provider => provider.GetRequiredService<EffectiveGrantCache>());
+
+        // SharedKernel registers a deny-all checker with TryAdd after the module loop; this one wins.
+        services.AddScoped<IScopedPermissionChecker, ScopedPermissionChecker>();
+        services.AddTransient<IEffectiveGrantQueryRepository, EffectiveGrantQueryRepository>();
+        services.AddTransient<IAuthorizationAuditLog, AuthorizationAuditLog>();
+
+        return services;
+    }
+}

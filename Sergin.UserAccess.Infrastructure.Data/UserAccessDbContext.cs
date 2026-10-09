@@ -1,5 +1,7 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Sergin.SharedKernel.Application.Aggregates;
 using Sergin.UserAccess.Application;
+using Sergin.UserAccess.Application.Configurations;
 using Sergin.SharedKernel.Infrastructure.Data.EFCore;
 using Sergin.SharedKernel.Infrastructure.Data.EFCore.Outbox;
 
@@ -22,9 +24,13 @@ internal sealed class UserAccessDbContext(DbContextOptions<UserAccessDbContext> 
 
     public DbSet<InboxMessage> InboxMessages => Set<InboxMessage>();
 
+    protected override AggregateFeatureRegistry AggregateFeatures =>
+        AggregateFeatureRegistry.FromAssemblies([UserAccessApplicationConfigurationsAssemblyReference.Assembly]);
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(Schema);
+        modelBuilder.HasPostgresExtension("ltree");
 
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
         modelBuilder.ApplyOutbox();

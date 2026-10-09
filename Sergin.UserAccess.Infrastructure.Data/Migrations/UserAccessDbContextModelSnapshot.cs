@@ -21,6 +21,7 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
                 .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "ltree");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Sergin.SharedKernel.Infrastructure.Data.EFCore.Outbox.InboxMessage", b =>
@@ -100,11 +101,90 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
                     b.ToTable("outbox_messages", "ua");
                 });
 
+            modelBuilder.Entity("Sergin.UserAccess.Domain.Authorization.AuthorizationAuditEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("action");
+
+                    b.Property<Guid>("ActorId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("actor_id");
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("details");
+
+                    b.Property<Guid>("EntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("entity_id");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("entity_type");
+
+                    b.Property<DateTime>("OccurredAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at_utc");
+
+                    b.Property<Guid?>("ScopeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("scope_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_authorization_audit_log");
+
+                    b.HasIndex("EntityId")
+                        .HasDatabaseName("ix_authorization_audit_log_entity_id");
+
+                    b.HasIndex("OccurredAtUtc")
+                        .HasDatabaseName("ix_authorization_audit_log_occurred_at_utc");
+
+                    b.ToTable("authorization_audit_log", "ua");
+                });
+
             modelBuilder.Entity("Sergin.UserAccess.Domain.Roles.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("DeletedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at_utc");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<bool>("IsInheritable")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_inheritable");
+
+                    b.Property<DateTime?>("ModifiedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified_at_utc");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("modified_by");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -112,14 +192,160 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
+                    b.Property<Guid>("OwnerScopeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("owner_scope_id");
+
+                    b.Property<Guid>("RowVersion")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid")
+                        .HasColumnName("row_version");
+
                     b.HasKey("Id")
                         .HasName("pk_roles");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("OwnerScopeId", "Name")
                         .IsUnique()
-                        .HasDatabaseName("ix_roles_name");
+                        .HasDatabaseName("ix_roles_owner_scope_id_name")
+                        .HasFilter("deleted_at_utc IS NULL");
 
-                    b.ToTable("roles", "ua");
+                    b.ToTable("roles", "ua", t =>
+                        {
+                            t.HasCheckConstraint("ck_roles_soft_delete", "(deleted_at_utc IS NULL) = (deleted_by IS NULL)");
+                        });
+
+                    b
+                        .HasAnnotation("Sergin:Audited", true)
+                        .HasAnnotation("Sergin:SoftDeletable", true)
+                        .HasAnnotation("Sergin:Versioned", true);
+                });
+
+            modelBuilder.Entity("Sergin.UserAccess.Domain.Scopes.Scope", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("DeletedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at_utc");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<DateTime?>("ModifiedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified_at_utc");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("modified_by");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("parent_id");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("ltree")
+                        .HasColumnName("path");
+
+                    b.Property<Guid>("RowVersion")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid")
+                        .HasColumnName("row_version");
+
+                    b.HasKey("Id")
+                        .HasName("pk_scopes");
+
+                    b.HasIndex("Path")
+                        .HasDatabaseName("ix_scopes_path");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Path"), "gist");
+
+                    b.HasIndex("ParentId", "Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_scopes_parent_id_name")
+                        .HasFilter("deleted_at_utc IS NULL");
+
+                    b.ToTable("scopes", "ua", t =>
+                        {
+                            t.HasCheckConstraint("ck_scopes_soft_delete", "(deleted_at_utc IS NULL) = (deleted_by IS NULL)");
+                        });
+
+                    b
+                        .HasAnnotation("Sergin:Audited", true)
+                        .HasAnnotation("Sergin:SoftDeletable", true)
+                        .HasAnnotation("Sergin:Versioned", true);
+                });
+
+            modelBuilder.Entity("Sergin.UserAccess.Domain.Users.Assignments.RoleAssignment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<bool>("IncludeSubtree")
+                        .HasColumnType("boolean")
+                        .HasColumnName("include_subtree");
+
+                    b.Property<DateTime?>("RevokedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revoked_at_utc");
+
+                    b.Property<Guid?>("RevokedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("revoked_by");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("role_id");
+
+                    b.Property<Guid>("ScopeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("scope_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<DateTime?>("ValidFromUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("valid_from_utc");
+
+                    b.Property<DateTime?>("ValidUntilUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("valid_until_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_role_assignments");
+
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_role_assignments_role_id");
+
+                    b.HasIndex("ScopeId")
+                        .HasDatabaseName("ix_role_assignments_scope_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_role_assignments_user_id")
+                        .HasFilter("revoked_at_utc IS NULL");
+
+                    b.ToTable("role_assignments", "ua");
                 });
 
             modelBuilder.Entity("Sergin.UserAccess.Domain.Users.User", b =>
@@ -175,6 +401,13 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Sergin.UserAccess.Domain.Roles.Role", b =>
                 {
+                    b.HasOne("Sergin.UserAccess.Domain.Scopes.Scope", null)
+                        .WithMany()
+                        .HasForeignKey("OwnerScopeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_roles_scopes_owner_scope_id");
+
                     b.OwnsMany("Sergin.SharedKernel.Domain.Securities.Permission", "Permissions", b1 =>
                         {
                             b1.Property<Guid>("role_id")
@@ -186,10 +419,30 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
                                 .HasColumnType("character varying(300)")
                                 .HasColumnName("permission");
 
+                            b1.Property<DateTime>("CreatedAtUtc")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("created_at_utc");
+
+                            b1.Property<Guid>("CreatedBy")
+                                .HasColumnType("uuid")
+                                .HasColumnName("created_by");
+
+                            b1.Property<DateTime?>("ModifiedAtUtc")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("modified_at_utc");
+
+                            b1.Property<Guid?>("ModifiedBy")
+                                .HasColumnType("uuid")
+                                .HasColumnName("modified_by");
+
                             b1.HasKey("role_id", "Value")
                                 .HasName("pk_role_permissions");
 
                             b1.ToTable("role_permissions", "ua");
+
+                            b1
+                                .HasAnnotation("Sergin:Audited", true)
+                                .HasAnnotation("Sergin:VersionRoot", "Sergin.UserAccess.Domain.Roles.Role");
 
                             b1.WithOwner()
                                 .HasForeignKey("role_id")
@@ -199,29 +452,42 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
                     b.Navigation("Permissions");
                 });
 
+            modelBuilder.Entity("Sergin.UserAccess.Domain.Scopes.Scope", b =>
+                {
+                    b.HasOne("Sergin.UserAccess.Domain.Scopes.Scope", null)
+                        .WithMany()
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_scopes_scopes_parent_id");
+                });
+
+            modelBuilder.Entity("Sergin.UserAccess.Domain.Users.Assignments.RoleAssignment", b =>
+                {
+                    b.HasOne("Sergin.UserAccess.Domain.Roles.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_role_assignments_roles_role_id");
+
+                    b.HasOne("Sergin.UserAccess.Domain.Scopes.Scope", null)
+                        .WithMany()
+                        .HasForeignKey("ScopeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_role_assignments_scopes_scope_id");
+
+                    b.HasOne("Sergin.UserAccess.Domain.Users.User", null)
+                        .WithMany("Assignments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_role_assignments_users_user_id");
+                });
+
             modelBuilder.Entity("Sergin.UserAccess.Domain.Users.User", b =>
                 {
-                    b.OwnsMany("Sergin.UserAccess.Domain.Users.UserRole", "Roles", b1 =>
-                        {
-                            b1.Property<Guid>("user_id")
-                                .HasColumnType("uuid")
-                                .HasColumnName("user_id");
-
-                            b1.Property<Guid>("RoleId")
-                                .HasColumnType("uuid")
-                                .HasColumnName("role_id");
-
-                            b1.HasKey("user_id", "RoleId")
-                                .HasName("pk_user_roles");
-
-                            b1.ToTable("user_roles", "ua");
-
-                            b1.WithOwner()
-                                .HasForeignKey("user_id")
-                                .HasConstraintName("fk_user_roles_users_user_id");
-                        });
-
-                    b.Navigation("Roles");
+                    b.Navigation("Assignments");
                 });
 #pragma warning restore 612, 618
         }
