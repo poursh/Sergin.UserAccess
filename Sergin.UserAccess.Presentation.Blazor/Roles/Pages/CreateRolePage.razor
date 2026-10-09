@@ -1,0 +1,30 @@
+@page "/ua/roles/new"
+
+<PageTitle>New role</PageTitle>
+
+<SerginBreadcrumbs Trail="Trail" />
+
+<MudText Typo="Typo.h4" Class="mb-4">New role</MudText>
+
+<MudForm @ref="form" Model="model" Validation="@validation" @bind-IsValid="isValid"
+         SuppressImplicitSubmission="false" onsubmit="@OnSubmit">
+    <MudCard>
+        <MudCardContent>
+            <MudTextField @bind-Value="model.Name" Label="Code" For="@(() => model.Name)" Immediate="true" />
+            <MudSwitch T="bool" @bind-Value="model.IsInheritable" Color="Color.Primary"
+                       Label="Inheritable: scopes below this one can use it too" />
+            <MudSelect T="string" MultiSelection="true" @bind-SelectedValues="model.Permissions" Label="Permissions"
+                       For="@(() => model.Name)">
+                @foreach (string permission in knownPermissions)
+                {
+                    <MudSelectItem T="string" Value="@permission">@permission</MudSelectItem>
+                }
+            </MudSelect>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                       Color="Color.Primary" Disabled="@(submitting || !isValid)">Create</MudButton>
+            <MudButton Href="@($"/ua/scopes/{ScopeId}")">Cancel</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudForm>

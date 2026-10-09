@@ -1,0 +1,21 @@
+@page "/ua/scopes/new"
+
+<PageTitle>New scope</PageTitle>
+
+<SerginBreadcrumbs Trail="Trail" />
+
+<MudText Typo="Typo.h4" Class="mb-4">New scope</MudText>
+
+<MudForm @ref="form" Model="model" Validation="@validation" @bind-IsValid="isValid"
+         SuppressImplicitSubmission="false" onsubmit="@OnSubmit">
+    <MudCard>
+        <MudCardContent>
+            <MudTextField @bind-Value="model.Name" Label="Name" For="@(() => model.Name)" Immediate="true" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                       Color="Color.Primary" Disabled="@(submitting || !isValid)">Create</MudButton>
+            <MudButton Href="@($"/ua/scopes/{ParentId}")">Cancel</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudForm>

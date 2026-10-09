@@ -24,6 +24,20 @@ public class Scope : AggregateRoot<ScopeId>
 
     public bool IsRoot => ParentId is null;
 
+    /// <summary>
+    /// The root, as the migration seeds it. Internal: the application never creates a second root; this exists
+    /// so a tree can be built in memory.
+    /// </summary>
+    internal static Scope CreateRoot(ScopeName name)
+    {
+        return new Scope
+        {
+            Id = RootId,
+            Name = name,
+            Path = ScopePath.Root(RootId)
+        };
+    }
+
     public static Scope Create(ScopeName name, Scope parent)
     {
         ArgumentNullException.ThrowIfNull(parent);

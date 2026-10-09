@@ -1,5 +1,6 @@
-using MudBlazor;
+﻿using MudBlazor;
 using Sergin.SharedKernel.Modules;
+using Sergin.UserAccess.Application.Contracts;
 
 namespace Sergin.UserAccess.Presentation.Blazor;
 
@@ -14,7 +15,16 @@ public static class UserAccessNavigation
         "/ua/users",
         Icons.Material.Filled.People,
         Order: 200,
-        RequiredPermission: "permission.ua.users.read");
+        RequiredPermission: UserAccessPermissions.UsersRead);
 
-    public static IReadOnlyCollection<SerginNavItem> Items { get; } = [Users];
+    // Gated on the global permission: a regional administrator, who holds scopes.read only in their region,
+    // reaches the pages through a link rather than the drawer.
+    public static SerginNavItem Scopes { get; } = new(
+        "Scopes",
+        "/ua/scopes",
+        Icons.Material.Filled.AccountTree,
+        Order: 210,
+        RequiredPermission: UserAccessPermissions.ScopesRead);
+
+    public static IReadOnlyCollection<SerginNavItem> Items { get; } = [Users, Scopes];
 }

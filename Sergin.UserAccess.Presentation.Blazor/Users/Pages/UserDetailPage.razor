@@ -1,4 +1,4 @@
-@page "/ua/users/{Id:guid}"
+﻿@page "/ua/users/{Id:guid}"
 
 <PageTitle>User</PageTitle>
 
@@ -18,4 +18,6 @@
                        Disabled="deactivating" OnClick="DeactivateAsync">Deactivate</MudButton>
         </MudCardActions>
     </MudCard>
+
+    <UserAssignmentsPanel UserId="Id" />
 }

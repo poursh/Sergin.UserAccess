@@ -1,0 +1,27 @@
+@page "/ua/scopes"
+
+<PageTitle>Scopes</PageTitle>
+
+<SerginBreadcrumbs Trail="Trail" />
+
+<MudText Typo="Typo.h4" Class="mb-4">Scopes</MudText>
+
+<SerginProblemPanel Problem="problem" />
+
+<MudSimpleTable Hover="true" Dense="true">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Level</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ScopeTreeItem scope in ordered)
+        {
+            <tr>
+                <td style="@Indent(scope)"><MudLink Href="@($"/ua/scopes/{scope.Id}")">@scope.Name</MudLink></td>
+                <td>@scope.Depth</td>
+            </tr>
+        }
+    </tbody>
+</MudSimpleTable>
