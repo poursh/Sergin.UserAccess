@@ -45,5 +45,10 @@ public sealed class UserAccessModule : ISerginWebApiModule, ISerginWebUiModule
 
     public Task MigrateAsync(IServiceProvider services) => services.MigrateDbContextAsync<UserAccessDbContext>();
 
-    public void MapEndpoints(RouteGroupBuilder group) => group.MapUserEndpoints();
+    public void MapEndpoints(RouteGroupBuilder group)
+    {
+        group.MapUserEndpoints();
+        group.MapScopeEndpoints();
+        group.MapRoleEndpoints();
+    }
 }

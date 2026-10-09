@@ -407,7 +407,7 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
                     b.HasOne("Sergin.UserAccess.Domain.Scopes.Scope", null)
                         .WithMany()
                         .HasForeignKey("OwnerScopeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("fk_roles_scopes_owner_scope_id");
 
@@ -460,7 +460,7 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
                     b.HasOne("Sergin.UserAccess.Domain.Scopes.Scope", null)
                         .WithMany()
                         .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .HasConstraintName("fk_scopes_scopes_parent_id");
                 });
 
@@ -469,14 +469,14 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
                     b.HasOne("Sergin.UserAccess.Domain.Roles.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("fk_role_assignments_roles_role_id");
 
                     b.HasOne("Sergin.UserAccess.Domain.Scopes.Scope", null)
                         .WithMany()
                         .HasForeignKey("ScopeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("fk_role_assignments_scopes_scope_id");
 

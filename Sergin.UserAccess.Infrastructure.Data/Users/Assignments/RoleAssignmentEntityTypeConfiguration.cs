@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sergin.UserAccess.Domain.Roles;
 using Sergin.UserAccess.Domain.Scopes;
@@ -30,17 +30,18 @@ internal sealed class RoleAssignmentEntityTypeConfiguration : IEntityTypeConfigu
         builder.Property(a => a.RoleId).HasConversion<RoleIdConverter>();
         builder.Property(a => a.ScopeId).HasConversion<ScopeIdConverter>();
 
-        // Restrict on both: roles and scopes are soft-deleted, so these never fire in normal operation; a
-        // revoked assignment keeps naming the role and scope it was for.
+        // ClientNoAction on both: roles and scopes are soft-deleted, so EF must not null or cascade a tracked
+        // assignment when its role or scope is Removed — a cascading role delete revokes the assignments in the
+        // same save. A revoked assignment keeps naming the role and scope it was for.
         builder.HasOne<Role>()
             .WithMany()
             .HasForeignKey(a => a.RoleId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.ClientNoAction);
 
         builder.HasOne<Scope>()
             .WithMany()
             .HasForeignKey(a => a.ScopeId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.ClientNoAction);
 
         builder.Ignore(a => a.IsRevoked);
 

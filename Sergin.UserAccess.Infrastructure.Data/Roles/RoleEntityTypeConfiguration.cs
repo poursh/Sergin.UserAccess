@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sergin.UserAccess.Domain.Roles;
 using Sergin.UserAccess.Domain.Scopes;
@@ -27,10 +27,11 @@ internal sealed class RoleEntityTypeConfiguration : IEntityTypeConfiguration<Rol
             .HasConversion<ScopeIdConverter>()
             .IsRequired();
 
+        // ClientNoAction: see ScopeEntityTypeConfiguration — soft deletion, so no client-side fix-up.
         builder.HasOne<Scope>()
             .WithMany()
             .HasForeignKey(r => r.OwnerScopeId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.ClientNoAction);
 
         // FR-3: a role code is unique within its owner scope. BR-4 (no repeat across ancestors and descendants)
         // cannot be an index; the create and rename validators check it, advisory like every repository rule.

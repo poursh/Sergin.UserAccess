@@ -14,7 +14,8 @@ internal static class AuthorizationInstallationExtensions
         services.AddSingleton<IAuthorizationCacheInvalidator>(provider => provider.GetRequiredService<EffectiveGrantCache>());
 
         // SharedKernel registers a deny-all checker with TryAdd after the module loop; this one wins.
-        services.AddScoped<IScopedPermissionChecker, ScopedPermissionChecker>();
+        services.AddScoped<ScopedPermissionChecker>();
+        services.AddScoped<IScopedPermissionChecker>(provider => provider.GetRequiredService<ScopedPermissionChecker>());
         services.AddTransient<IEffectiveGrantQueryRepository, EffectiveGrantQueryRepository>();
         services.AddTransient<IAuthorizationAuditLog, AuthorizationAuditLog>();
 

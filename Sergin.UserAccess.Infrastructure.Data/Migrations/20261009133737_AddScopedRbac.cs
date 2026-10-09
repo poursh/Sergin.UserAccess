@@ -124,7 +124,7 @@ public partial class AddScopedRbac : Migration
                     principalSchema: Schema,
                     principalTable: "scopes",
                     principalColumn: "id",
-                    onDelete: ReferentialAction.Restrict);
+                    onDelete: ReferentialAction.NoAction);
             });
 
         migrationBuilder.CreateIndex(
@@ -199,7 +199,7 @@ public partial class AddScopedRbac : Migration
             principalSchema: Schema,
             principalTable: "scopes",
             principalColumn: "id",
-            onDelete: ReferentialAction.Restrict);
+            onDelete: ReferentialAction.NoAction);
     }
 
     private static void CreateAssignmentsFromUserRoles(MigrationBuilder migrationBuilder)
@@ -228,14 +228,14 @@ public partial class AddScopedRbac : Migration
                     principalSchema: Schema,
                     principalTable: "roles",
                     principalColumn: "id",
-                    onDelete: ReferentialAction.Restrict);
+                    onDelete: ReferentialAction.NoAction);
                 table.ForeignKey(
                     name: "fk_role_assignments_scopes_scope_id",
                     column: x => x.scope_id,
                     principalSchema: Schema,
                     principalTable: "scopes",
                     principalColumn: "id",
-                    onDelete: ReferentialAction.Restrict);
+                    onDelete: ReferentialAction.NoAction);
                 table.ForeignKey(
                     name: "fk_role_assignments_users_user_id",
                     column: x => x.user_id,

@@ -121,6 +121,9 @@ public sealed record ScopePath(string Value)
 {
     private const char Separator = '.';
 
+    /// <summary>Levels from the root, the root being 1: Postgres' <c>nlevel</c>.</summary>
+    public int Depth => Value.Count(character => character == Separator) + 1;
+
     public static ScopePath Root(ScopeId rootId)
     {
         ArgumentNullException.ThrowIfNull(rootId);
