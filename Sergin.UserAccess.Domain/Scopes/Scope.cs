@@ -1,4 +1,5 @@
 ﻿using Sergin.SharedKernel.Domain;
+using Sergin.SharedKernel.Domain.Securities;
 
 namespace Sergin.UserAccess.Domain.Scopes;
 
@@ -12,8 +13,8 @@ public class Scope : AggregateRoot<ScopeId>
 {
     private Scope() { }
 
-    /// <summary>The id the migration seeds the root scope with.</summary>
-    public static ScopeId RootId { get; } = new(Guid.Parse("01920000-0000-7000-8000-0000000000b1"));
+    /// <summary>The id the migration seeds the root scope with: SharedKernel's <see cref="AuthorizationScope.RootId"/>.</summary>
+    public static ScopeId RootId { get; } = new(AuthorizationScope.RootId);
 
     public ScopeName Name { get; private set; }
 
