@@ -1,6 +1,5 @@
 ﻿using Sergin.SharedKernel.Domain;
 using Sergin.SharedKernel.Domain.Securities;
-using Sergin.UserAccess.Domain.Authorization;
 using Sergin.UserAccess.Domain.Scopes;
 
 namespace Sergin.UserAccess.Domain.Roles;
@@ -45,11 +44,6 @@ public class Role : AggregateRoot<RoleId>
         };
 
         role.permissions.AddRange(permissions.DistinctBy(permission => permission.Value));
-        role.Changed(
-            "role.created",
-            ("name", name.Value),
-            ("inheritable", isInheritable.ToString()),
-            ("permissions", string.Join(",", role.permissions.Select(permission => permission.Value))));
 
         return role;
     }
@@ -68,9 +62,7 @@ public class Role : AggregateRoot<RoleId>
 
     public void Rename(RoleName name)
     {
-        string previous = Name.Value;
         Name = name;
-        Changed("role.renamed", ("from", previous), ("to", name.Value));
     }
 
     public void SetInheritable(bool isInheritable)
@@ -81,7 +73,6 @@ public class Role : AggregateRoot<RoleId>
         }
 
         IsInheritable = isInheritable;
-        Changed("role.inheritability-changed", ("inheritable", isInheritable.ToString()));
     }
 
     public void Grant(Permission permission)
@@ -91,7 +82,6 @@ public class Role : AggregateRoot<RoleId>
         if (!permissions.Contains(permission))
         {
             permissions.Add(permission);
-            Changed("role.permission-granted", ("permission", permission.Value));
         }
     }
 
@@ -99,18 +89,8 @@ public class Role : AggregateRoot<RoleId>
     {
         ArgumentNullException.ThrowIfNull(permission);
 
-        if (permissions.Remove(permission))
-        {
-            Changed("role.permission-revoked", ("permission", permission.Value));
-        }
+        permissions.Remove(permission);
     }
-
-    /// <summary>Records the delete in the audit log; the repository's <c>Remove</c> does the rest.</summary>
-    public void MarkDeleted() => Changed("role.deleted", ("name", Name.Value));
-
-    private void Changed(string action, params (string Key, string? Value)[] details) =>
-        Raise(new AuthorizationChangedDomainEvent(
-            action, nameof(Role), Id.Value, OwnerScopeId.Value, details.ToDictionary(item => item.Key, item => item.Value)));
 }
 
 public sealed record RoleId(Guid Value);

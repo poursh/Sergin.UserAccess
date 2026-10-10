@@ -101,57 +101,6 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations
                     b.ToTable("outbox_messages", "ua");
                 });
 
-            modelBuilder.Entity("Sergin.UserAccess.Domain.Authorization.AuthorizationAuditEntry", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("action");
-
-                    b.Property<Guid>("ActorId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("actor_id");
-
-                    b.Property<string>("Details")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("details");
-
-                    b.Property<Guid>("EntityId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("entity_id");
-
-                    b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("entity_type");
-
-                    b.Property<DateTime>("OccurredAtUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("occurred_at_utc");
-
-                    b.Property<Guid?>("ScopeId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("scope_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_authorization_audit_log");
-
-                    b.HasIndex("EntityId")
-                        .HasDatabaseName("ix_authorization_audit_log_entity_id");
-
-                    b.HasIndex("OccurredAtUtc")
-                        .HasDatabaseName("ix_authorization_audit_log_occurred_at_utc");
-
-                    b.ToTable("authorization_audit_log", "ua");
-                });
-
             modelBuilder.Entity("Sergin.UserAccess.Domain.Roles.Role", b =>
                 {
                     b.Property<Guid>("Id")

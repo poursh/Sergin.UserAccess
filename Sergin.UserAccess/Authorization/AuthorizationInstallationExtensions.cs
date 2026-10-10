@@ -17,7 +17,6 @@ internal static class AuthorizationInstallationExtensions
         services.AddScoped<ScopedPermissionChecker>();
         services.AddScoped<IScopedPermissionChecker>(provider => provider.GetRequiredService<ScopedPermissionChecker>());
         services.AddTransient<IEffectiveGrantQueryRepository, EffectiveGrantQueryRepository>();
-        services.AddTransient<IAuthorizationAuditLog, AuthorizationAuditLog>();
 
         return services;
     }

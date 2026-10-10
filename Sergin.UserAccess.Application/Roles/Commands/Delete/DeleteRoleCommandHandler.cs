@@ -45,7 +45,6 @@ internal sealed class DeleteRoleCommandHandler(
             }
         }
 
-        role.MarkDeleted();
         roles.Remove(role);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

@@ -50,12 +50,10 @@ internal sealed class DeleteScopeCommandHandler(
 
             foreach (Role role in await roles.GetOwnedByAsync(scope.Id, cancellationToken))
             {
-                role.MarkDeleted();
                 roles.Remove(role);
             }
         }
 
-        scope.MarkDeleted();
         scopes.Remove(scope);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

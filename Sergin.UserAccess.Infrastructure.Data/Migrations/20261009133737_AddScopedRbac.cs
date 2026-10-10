@@ -6,7 +6,7 @@ namespace Sergin.UserAccess.Infrastructure.Data.Migrations;
 
 /// <summary>
 /// Scoped RBAC. Adds the scope tree (ltree paths) with one seeded root, makes every role owned by a scope, turns
-/// <c>user_roles</c> into <c>role_assignments</c>, and adds the append-only authorization audit log.
+/// <c>user_roles</c> into <c>role_assignments</c>.
 /// Existing data keeps its meaning exactly: every existing role becomes owned by the root and inheritable — a
 /// global role (BR-7) — and every existing user-role row becomes an assignment at the root over the whole tree,
 /// so every user holds the same permissions everywhere as before. Audit stamps for existing rows use the
@@ -28,7 +28,6 @@ public partial class AddScopedRbac : Migration
         CreateScopes(migrationBuilder);
         OwnRolesByRoot(migrationBuilder);
         CreateAssignmentsFromUserRoles(migrationBuilder);
-        CreateAuditLog(migrationBuilder);
     }
 
     /// <inheritdoc />
@@ -67,8 +66,6 @@ public partial class AddScopedRbac : Migration
         migrationBuilder.Sql("DELETE FROM ua.roles WHERE deleted_at_utc IS NOT NULL OR owner_scope_id <> '" + RootId + "';");
 
         migrationBuilder.DropForeignKey(name: "fk_roles_scopes_owner_scope_id", schema: Schema, table: "roles");
-        migrationBuilder.DropTable(name: "authorization_audit_log", schema: Schema);
-        migrationBuilder.Sql("DROP FUNCTION ua.refuse_audit_log_change();");
         migrationBuilder.DropTable(name: "role_assignments", schema: Schema);
         migrationBuilder.DropTable(name: "scopes", schema: Schema);
 
@@ -265,49 +262,6 @@ public partial class AddScopedRbac : Migration
             """);
 
         migrationBuilder.DropTable(name: "user_roles", schema: Schema);
-    }
-
-    private static void CreateAuditLog(MigrationBuilder migrationBuilder)
-    {
-        migrationBuilder.CreateTable(
-            name: "authorization_audit_log",
-            schema: Schema,
-            columns: table => new
-            {
-                id = table.Column<Guid>(type: "uuid", nullable: false),
-                occurred_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                actor_id = table.Column<Guid>(type: "uuid", nullable: false),
-                action = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                entity_type = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                entity_id = table.Column<Guid>(type: "uuid", nullable: false),
-                scope_id = table.Column<Guid>(type: "uuid", nullable: true),
-                details = table.Column<string>(type: "jsonb", nullable: false)
-            },
-            constraints: table => table.PrimaryKey("pk_authorization_audit_log", x => x.id));
-
-        migrationBuilder.CreateIndex(
-            name: "ix_authorization_audit_log_entity_id", schema: Schema, table: "authorization_audit_log", column: "entity_id");
-        migrationBuilder.CreateIndex(
-            name: "ix_authorization_audit_log_occurred_at_utc", schema: Schema, table: "authorization_audit_log", column: "occurred_at_utc");
-
-        // NFR-6: the log cannot be edited. Refused at the database, so neither the application nor a
-        // hand-written statement can rewrite or remove an entry; 42501 is insufficient_privilege.
-        migrationBuilder.Sql(
-            """
-            CREATE FUNCTION ua.refuse_audit_log_change() RETURNS trigger LANGUAGE plpgsql AS $$
-            BEGIN
-                RAISE EXCEPTION 'ua.authorization_audit_log is append-only' USING ERRCODE = '42501';
-            END;
-            $$;
-
-            CREATE TRIGGER authorization_audit_log_append_only
-                BEFORE UPDATE OR DELETE ON ua.authorization_audit_log
-                FOR EACH ROW EXECUTE FUNCTION ua.refuse_audit_log_change();
-
-            CREATE TRIGGER authorization_audit_log_no_truncate
-                BEFORE TRUNCATE ON ua.authorization_audit_log
-                FOR EACH STATEMENT EXECUTE FUNCTION ua.refuse_audit_log_change();
-            """);
     }
 
     private static void AddAuditColumns(MigrationBuilder migrationBuilder, string table)

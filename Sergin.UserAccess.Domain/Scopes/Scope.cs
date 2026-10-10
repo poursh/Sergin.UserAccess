@@ -1,5 +1,4 @@
 ﻿using Sergin.SharedKernel.Domain;
-using Sergin.UserAccess.Domain.Authorization;
 
 namespace Sergin.UserAccess.Domain.Scopes;
 
@@ -52,16 +51,12 @@ public class Scope : AggregateRoot<ScopeId>
             Path = parent.Path.Child(id)
         };
 
-        scope.Changed("scope.created", ("name", name.Value), ("parent_id", parent.Id.Value.ToString()));
-
         return scope;
     }
 
     public void Rename(ScopeName name)
     {
-        string previous = Name.Value;
         Name = name;
-        Changed("scope.renamed", ("from", previous), ("to", name.Value));
     }
 
     /// <summary>
@@ -100,20 +95,11 @@ public class Scope : AggregateRoot<ScopeId>
             descendant.Path = descendant.Path.Rebase(from, to);
         }
 
-        ScopeId? previousParent = ParentId;
         ParentId = newParent.Id;
         Path = to;
-        Changed("scope.moved", ("from_parent_id", previousParent?.Value.ToString()), ("to_parent_id", newParent.Id.Value.ToString()));
 
         return Result.Success;
     }
-
-    /// <summary>Records the delete in the audit log; the repository's <c>Remove</c> does the rest.</summary>
-    public void MarkDeleted() => Changed("scope.deleted", ("name", Name.Value));
-
-    private void Changed(string action, params (string Key, string? Value)[] details) =>
-        Raise(new AuthorizationChangedDomainEvent(
-            action, nameof(Scope), Id.Value, Id.Value, details.ToDictionary(item => item.Key, item => item.Value)));
 }
 
 public sealed record ScopeId(Guid Value)

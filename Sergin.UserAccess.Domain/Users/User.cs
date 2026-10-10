@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using Sergin.SharedKernel.Domain;
-using Sergin.UserAccess.Domain.Authorization;
+﻿using Sergin.SharedKernel.Domain;
 using Sergin.UserAccess.Domain.Roles;
 using Sergin.UserAccess.Domain.Scopes;
 using Sergin.UserAccess.Domain.Users.Assignments;
@@ -104,14 +102,6 @@ public class User : AggregateRoot<UserInternalId>
 
         var assignment = RoleAssignment.Create(role.Id, scope.Id, includeSubtree, period);
         assignments.Add(assignment);
-        Changed(
-            "assignment.created",
-            assignment.Id.Value,
-            scope.Id.Value,
-            ("role_id", role.Id.Value.ToString()),
-            ("include_subtree", includeSubtree.ToString()),
-            ("valid_from_utc", period.FromUtc?.ToString("O", CultureInfo.InvariantCulture)),
-            ("valid_until_utc", period.UntilUtc?.ToString("O", CultureInfo.InvariantCulture)));
 
         return assignment;
     }
@@ -136,7 +126,6 @@ public class User : AggregateRoot<UserInternalId>
 
         var assignment = RoleAssignment.Create(role.Id, Scope.RootId, includeSubtree: true, ValidityPeriod.Always);
         assignments.Add(assignment);
-        Changed("assignment.created", assignment.Id.Value, Scope.RootId.Value, ("role_id", role.Id.Value.ToString()), ("include_subtree", bool.TrueString));
     }
 
     /// <summary>Revokes an assignment now (FR-12). The row stays, stamped; revoking twice is not found.</summary>
@@ -150,25 +139,12 @@ public class User : AggregateRoot<UserInternalId>
         }
 
         assignment.Revoke(nowUtc, revokedBy);
-        Changed("assignment.revoked", assignment.Id.Value, assignment.ScopeId.Value, ("role_id", assignment.RoleId.Value.ToString()));
 
         return Result.Success;
     }
 
     /// <summary>Disables every check for this user (FR-13). Assignments are kept, so reactivating restores them.</summary>
-    public void Deactivate()
-    {
-        IsActive = false;
-        Changed("user.deactivated", Id.Value, scopeId: null);
-    }
-
-    private void Changed(string action, Guid entityId, Guid? scopeId, params (string Key, string? Value)[] details) =>
-        Raise(new AuthorizationChangedDomainEvent(
-            action,
-            entityId == Id.Value ? nameof(User) : nameof(RoleAssignment),
-            entityId,
-            scopeId,
-            details.Append((Key: "user_id", Value: (string?)Id.Value.ToString())).ToDictionary(item => item.Key, item => item.Value)));
+    public void Deactivate() => IsActive = false;
 }
 
 public sealed record UserInternalId(Guid Value);
