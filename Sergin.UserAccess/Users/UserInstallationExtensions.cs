@@ -38,6 +38,9 @@ internal static class UserInstallationExtensions
         // for it at startup and refuses to run without one.
         services.AddTransient<IExternalIdentityResolver, ExternalIdentityResolver>();
 
+        // Makes the DevUser host's configured user a real administrator, so scoped checks answer for it.
+        services.AddTransient<IDevUserSeeder, DevUserSeeder>();
+
         return services;
     }
 

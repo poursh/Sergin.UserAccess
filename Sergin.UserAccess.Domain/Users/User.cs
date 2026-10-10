@@ -62,6 +62,24 @@ public class User : AggregateRoot<UserInternalId>
         };
     }
 
+    /// <summary>
+    /// Creates the configured development user under the id the host's configuration gives it, so the user the
+    /// development host signs everyone in as is the user its grants are stored for.
+    /// </summary>
+    public static User CreateDevelopmentUser(
+        UserInternalId id, UserName userName, EmailAddress? email, string firstName, string lastName)
+    {
+        return new User
+        {
+            Id = id,
+            UserName = userName,
+            IsActive = true,
+            Email = email,
+            FirstName = firstName,
+            LastName = lastName
+        };
+    }
+
     /// <summary>Links a pre-existing local user to the provider subject that now authenticates them.</summary>
     public void LinkExternalId(ExternalUserId externalId) => ExternalId = externalId;
 

@@ -22,6 +22,9 @@ public class Role : AggregateRoot<RoleId>
     /// </summary>
     public const string DefaultRoleName = "viewer";
 
+    /// <summary>The seeded root-owned role holding <c>permission.sys.platform-all</c>: everything, everywhere.</summary>
+    public const string AdministratorRoleName = "administrator";
+
     /// <summary>The role's code: unique within its owner scope, and across that scope's ancestors and descendants (BR-4).</summary>
     public RoleName Name { get; private set; }
 
