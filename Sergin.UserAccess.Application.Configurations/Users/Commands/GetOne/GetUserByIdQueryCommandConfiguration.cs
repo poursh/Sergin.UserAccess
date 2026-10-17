@@ -7,5 +7,5 @@ namespace Sergin.UserAccess.Application.Configurations.Users.Commands.GetOne;
 internal sealed class GetUserByIdQueryCommandConfiguration : ICommandConfiguration<GetUserByIdQueryCommand>
 {
     public void Configure(CommandConfigurationBuilder<GetUserByIdQueryCommand> builder) =>
-        builder.RequirePermissions(UserAccessPermissions.UsersRead);
+        builder.RequirePermissions(UserAccessPermissions.UsersRead).AtRoot();
 }

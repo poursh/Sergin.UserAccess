@@ -15,7 +15,8 @@ public static class UserAccessNavigation
         "/ua/users",
         Icons.Material.Filled.People,
         Order: 200,
-        RequiredPermission: UserAccessPermissions.UsersRead);
+        RequiredPermission: UserAccessPermissions.UsersRead,
+        AtRoot: true);
 
     // Gated on the global permission: a regional administrator, who holds scopes.read only in their region,
     // reaches the pages through a link rather than the drawer.
@@ -24,7 +25,8 @@ public static class UserAccessNavigation
         "/ua/scopes",
         Icons.Material.Filled.AccountTree,
         Order: 210,
-        RequiredPermission: UserAccessPermissions.ScopesRead);
+        RequiredPermission: UserAccessPermissions.ScopesRead,
+        AtRoot: true);
 
     public static IReadOnlyCollection<SerginNavItem> Items { get; } = [Users, Scopes];
 }

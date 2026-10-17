@@ -16,6 +16,7 @@ internal static class AuthorizationInstallationExtensions
         // SharedKernel registers a deny-all checker with TryAdd after the module loop; this one wins.
         services.AddScoped<ScopedPermissionChecker>();
         services.AddScoped<IScopedPermissionChecker>(provider => provider.GetRequiredService<ScopedPermissionChecker>());
+        services.AddScoped<IScopePathResolver>(provider => provider.GetRequiredService<ScopedPermissionChecker>());
         services.AddTransient<IEffectiveGrantQueryRepository, EffectiveGrantQueryRepository>();
 
         return services;

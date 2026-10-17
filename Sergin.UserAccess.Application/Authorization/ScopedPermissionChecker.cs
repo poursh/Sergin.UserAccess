@@ -9,11 +9,12 @@ namespace Sergin.UserAccess.Application.Authorization;
 /// FR-9: whether a user holds a permission on a target scope, from every active assignment. An assignment grants
 /// on its own scope, and below it when it covers the subtree; <see cref="Permission.AllPlatform"/> in a role
 /// grants every permission wherever that role reaches. An unknown or deleted target scope grants nothing.
+/// Also SharedKernel's <see cref="IScopePathResolver"/>, answered from the same cached path lookup.
 /// </summary>
 internal sealed class ScopedPermissionChecker(
     IEffectiveGrantQueryRepository grants,
     EffectiveGrantCache cache,
-    IDateTimeProvider clock) : IScopedPermissionChecker
+    IDateTimeProvider clock) : IScopedPermissionChecker, IScopePathResolver
 {
     public async Task<bool> HasPermissionAsync(
         Guid userId, Permission permission, Guid scopeId, CancellationToken cancellationToken = default)
@@ -36,6 +37,20 @@ internal sealed class ScopedPermissionChecker(
             && grant.Covers(target)
             && (grant.Permissions.Contains(permission.Value) || grant.Permissions.Contains(Permission.AllPlatform.Value)));
     }
+
+    public async Task<ScopeReach> GetReachAsync(Guid userId, Permission permission, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(permission);
+
+        IReadOnlyCollection<EffectiveGrant> active = await GetActiveGrantsAsync(userId, cancellationToken);
+
+        return ScopeReach.Of(active
+            .Where(grant => grant.Permissions.Contains(permission.Value) || grant.Permissions.Contains(Permission.AllPlatform.Value))
+            .Select(grant => new ScopeReachEntry(grant.ScopeId, grant.ScopePath.Value, grant.IncludeSubtree)));
+    }
+
+    public async Task<string?> GetPathAsync(Guid scopeId, CancellationToken cancellationToken = default) =>
+        (await GetPathAsync(scopeId, clock.UtcNow, cancellationToken))?.Value;
 
     /// <summary>FR-11: every permission the user holds, per assignment, with the scope each one reaches from.</summary>
     internal async Task<IReadOnlyCollection<EffectiveGrant>> GetActiveGrantsAsync(Guid userId, CancellationToken cancellationToken)

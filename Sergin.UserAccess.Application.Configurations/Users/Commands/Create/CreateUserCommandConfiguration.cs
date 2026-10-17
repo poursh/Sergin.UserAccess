@@ -7,5 +7,5 @@ namespace Sergin.UserAccess.Application.Configurations.Users.Commands.Create;
 internal sealed class CreateUserCommandConfiguration : ICommandConfiguration<CreateUserCommand>
 {
     public void Configure(CommandConfigurationBuilder<CreateUserCommand> builder) =>
-        builder.RequirePermissions(UserAccessPermissions.UsersManage);
+        builder.RequirePermissions(UserAccessPermissions.UsersManage).AtRoot();
 }

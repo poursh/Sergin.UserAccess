@@ -66,9 +66,10 @@ public class Scope : AggregateRoot<ScopeId>
     /// below this one (loaded through <c>IScopeRepository.GetSubtreeAsync</c>): their paths are rewritten here,
     /// in memory, so the whole move is one save and one transaction (NFR-4). Whether the move would strand an
     /// assignment outside its role's owner subtree (BR-6) is not visible from inside this aggregate; the move
-    /// command's validator checks it.
+    /// command's validator checks it. A move that changes the parent raises <see cref="ScopesMovedDomainEvent"/>
+    /// at <paramref name="movedAtUtc"/>, so the records other modules keep in these scopes follow the new paths.
     /// </summary>
-    public ErrorOr<Success> MoveUnder(Scope newParent, IReadOnlyCollection<Scope> subtree)
+    public ErrorOr<Success> MoveUnder(Scope newParent, IReadOnlyCollection<Scope> subtree, DateTime movedAtUtc)
     {
         ArgumentNullException.ThrowIfNull(newParent);
         ArgumentNullException.ThrowIfNull(subtree);
@@ -99,9 +100,17 @@ public class Scope : AggregateRoot<ScopeId>
         ParentId = newParent.Id;
         Path = to;
 
+        Raise(new ScopesMovedDomainEvent(
+            Guid.CreateVersion7(),
+            movedAtUtc,
+            [Id.Value, .. subtree.Where(scope => scope.Id != Id).Select(scope => scope.Id.Value)]));
+
         return Result.Success;
     }
 }
+
+/// <summary>The scopes a move re-pathed: the moved scope and every scope below it.</summary>
+public sealed record ScopesMovedDomainEvent(Guid Id, DateTime OccurredOnUtc, IReadOnlyCollection<Guid> ScopeIds) : IDomainEvent;
 
 public sealed record ScopeId(Guid Value)
 {

@@ -7,5 +7,5 @@ namespace Sergin.UserAccess.Application.Configurations.Users.Assignments.Command
 internal sealed class GetUserAssignmentsQueryCommandConfiguration : ICommandConfiguration<GetUserAssignmentsQueryCommand>
 {
     public void Configure(CommandConfigurationBuilder<GetUserAssignmentsQueryCommand> builder) =>
-        builder.RequirePermissions(UserAccessPermissions.UsersRead);
+        builder.RequirePermissions(UserAccessPermissions.UsersRead).AtRoot();
 }
