@@ -23,6 +23,7 @@ public sealed partial class ScopeDetailPage
     private RowVersion? version;
     private SerginProblem? problem;
     private IReadOnlyCollection<AssignableRoleItem> roles = [];
+    private IReadOnlyCollection<ScopeTreeItem> tree = [];
     private IReadOnlyCollection<ScopeTreeItem> moveTargets = [];
     private Guid newParentId;
     private bool cascade;
@@ -81,11 +82,12 @@ public sealed partial class ScopeDetailPage
         roles = assignable.IsError ? [] : assignable.Value;
 
         // Anywhere but here and below: the server refuses a cycle too, this just keeps it out of the list.
-        ErrorOr<IReadOnlyCollection<ScopeTreeItem>> tree = await Dispatcher.SendAsync(new GetScopeTreeQueryCommand());
-        moveTargets = tree.IsError ? [] : [.. tree.Value.Where(candidate => !IsSelfOrBelow(tree.Value, candidate))];
+        ErrorOr<IReadOnlyCollection<ScopeTreeItem>> loadedTree = await Dispatcher.SendAsync(new GetScopeTreeQueryCommand());
+        tree = loadedTree.IsError ? [] : loadedTree.Value;
+        moveTargets = [.. tree.Where(candidate => !IsSelfOrBelow(candidate))];
     }
 
-    private bool IsSelfOrBelow(IReadOnlyCollection<ScopeTreeItem> tree, ScopeTreeItem candidate)
+    private bool IsSelfOrBelow(ScopeTreeItem candidate)
     {
         ScopeTreeItem? current = candidate;
 
