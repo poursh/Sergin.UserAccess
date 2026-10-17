@@ -9,7 +9,7 @@ using Sergin.UserAccess.Domain.Scopes;
 namespace Sergin.UserAccess.Application.Scopes.Commands.GetTree;
 
 /// <summary>
-/// The scopes the caller may read: all of them for a system admin, otherwise the scopes their active assignments
+/// The scopes the caller may read: all of them for a system identity, otherwise the scopes their active assignments
 /// carrying the permission reach (a root grant over the subtree reaches all of them). A visible scope whose parent is not visible comes back as a top-level node.
 /// </summary>
 internal sealed class GetScopeTreeQueryCommandHandler(
@@ -23,7 +23,7 @@ internal sealed class GetScopeTreeQueryCommandHandler(
 
         Func<ScopePath, bool> visible;
 
-        if (userContext.IsSystemAdmin)
+        if (userContext is ISystemUserContext)
         {
             visible = _ => true;
         }
