@@ -3,8 +3,8 @@ using Sergin.UserAccess.Application.Contracts.Scopes.Commands.Rename;
 
 namespace Sergin.UserAccess.Application.Configurations.Scopes.Commands.Rename;
 
-// No RequirePermissions: the permission is checked against the target scope in the handler, since a regional
-// administrator holds it there only and the global claims would refuse them.
+// No RequirePermissions: the permission is checked against the target scope in the handler, which is the
+// record's own scope rather than the scope the caller is working in.
 internal sealed class RenameScopeCommandConfiguration : ICommandConfiguration<RenameScopeCommand>
 {
     public void Configure(CommandConfigurationBuilder<RenameScopeCommand> builder) => builder.RequireExpectedVersion();

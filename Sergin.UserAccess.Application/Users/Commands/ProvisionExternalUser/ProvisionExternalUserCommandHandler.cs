@@ -1,5 +1,4 @@
 ﻿using Sergin.SharedKernel.Application.Commands;
-using Sergin.SharedKernel.Domain.Securities;
 using Sergin.UserAccess.Domain.Roles;
 using Sergin.UserAccess.Domain.Scopes;
 using Sergin.UserAccess.Domain.Users;
@@ -9,8 +8,7 @@ namespace Sergin.UserAccess.Application.Users.Commands.ProvisionExternalUser;
 internal sealed class ProvisionExternalUserCommandHandler(
     IUserAccessUnitOfWork unitOfWork,
     IUserRepository userRepository,
-    IRoleRepository roleRepository,
-    IGetUserPermissionsQueryRepository permissionsRepository)
+    IRoleRepository roleRepository)
     : ICommandHandler<ProvisionExternalUserCommand, ProvisionExternalUserCommandResponse>
 {
     public async Task<ErrorOr<ProvisionExternalUserCommandResponse>> Handle(
@@ -43,10 +41,7 @@ internal sealed class ProvisionExternalUserCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        IReadOnlyCollection<Permission> permissions =
-            await permissionsRepository.GetPermissions(user.Id, cancellationToken);
-
-        return new ProvisionExternalUserCommandResponse(user.Id.Value, permissions);
+        return new ProvisionExternalUserCommandResponse(user.Id.Value);
     }
 
     /// <summary>

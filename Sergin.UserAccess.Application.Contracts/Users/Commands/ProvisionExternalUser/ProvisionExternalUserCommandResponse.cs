@@ -1,6 +1,3 @@
-﻿using Sergin.SharedKernel.Domain.Securities;
+﻿namespace Sergin.UserAccess.Application.Contracts.Users.Commands.ProvisionExternalUser;
 
-namespace Sergin.UserAccess.Application.Contracts.Users.Commands.ProvisionExternalUser;
-
-public sealed record ProvisionExternalUserCommandResponse(
-    Guid UserId, IReadOnlyCollection<Permission> Permissions);
+public sealed record ProvisionExternalUserCommandResponse(Guid UserId);
