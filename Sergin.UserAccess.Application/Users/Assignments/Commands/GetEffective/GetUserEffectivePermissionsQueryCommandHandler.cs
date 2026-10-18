@@ -1,16 +1,26 @@
 ﻿using Sergin.SharedKernel.Application.Commands.Queries;
 using Sergin.UserAccess.Application.Authorization;
 using Sergin.UserAccess.Application.Scopes;
+using Sergin.UserAccess.Application.Contracts;
 using Sergin.UserAccess.Application.Contracts.Users.Assignments.Commands.GetEffective;
 
 namespace Sergin.UserAccess.Application.Users.Assignments.Commands.GetEffective;
 
-internal sealed class GetUserEffectivePermissionsQueryCommandHandler(ScopedPermissionChecker checker, IScopeQueryRepository scopes)
+internal sealed class GetUserEffectivePermissionsQueryCommandHandler(
+    ScopedPermissionChecker checker,
+    IScopeQueryRepository scopes,
+    UserReachGuard reach)
     : IQueryHandler<GetUserEffectivePermissionsQueryCommand, IReadOnlyCollection<EffectivePermissionItem>>
 {
     public async Task<ErrorOr<IReadOnlyCollection<EffectivePermissionItem>>> Handle(
         GetUserEffectivePermissionsQueryCommand request, CancellationToken cancellationToken)
     {
+        // A regional reader does not see the permissions of someone granted outside their region.
+        if (!await reach.CoversAsync(request.UserId, UserAccessPermissions.UsersRead, cancellationToken))
+        {
+            return Error.Forbidden();
+        }
+
         IReadOnlyCollection<EffectiveGrant> grants = await checker.GetActiveGrantsAsync(request.UserId, cancellationToken);
         IReadOnlyDictionary<Guid, string> names =
             await scopes.GetNamesAsync([.. grants.Select(grant => grant.ScopeId).Distinct()], cancellationToken);

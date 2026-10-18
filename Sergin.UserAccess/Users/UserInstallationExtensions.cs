@@ -30,6 +30,7 @@ internal static class UserInstallationExtensions
         services.AddTransient<IGetUserQueryRepository, UserQueryRepository>();
         services.AddTransient<IGetUserListQueryRepository, UserQueryRepository>();
         services.AddTransient<IUserAssignmentQueryRepository, UserAssignmentQueryRepository>();
+        services.AddTransient<UserReachGuard>();
 
         // The authentication seam SharedKernel calls during the OIDC callback. Registering it is what
         // makes Sergin:Auth:Mode=Keycloak legal for a host composing this module — the bootstrap checks

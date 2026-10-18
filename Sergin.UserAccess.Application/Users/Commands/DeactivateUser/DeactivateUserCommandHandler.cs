@@ -1,13 +1,15 @@
 ﻿using Sergin.UserAccess.Domain.Users;
 using Sergin.SharedKernel.Application.Commands;
 using Sergin.UserAccess.Application.Authorization;
+using Sergin.UserAccess.Application.Contracts;
 
 namespace Sergin.UserAccess.Application.Users.Commands.DeactivateUser;
 
 internal sealed class DeactivateUserCommandHandler(
     IUserAccessUnitOfWork unitOfWork,
     IUserRepository repository,
-    IAuthorizationCacheInvalidator cache) : ICommandHandler<DeactivateUserCommand, DeactivateUserCommandResponse>
+    IAuthorizationCacheInvalidator cache,
+    UserReachGuard reach) : ICommandHandler<DeactivateUserCommand, DeactivateUserCommandResponse>
 {
     public async Task<ErrorOr<DeactivateUserCommandResponse>> Handle(
         DeactivateUserCommand request, CancellationToken cancellationToken)
@@ -17,6 +19,12 @@ internal sealed class DeactivateUserCommandHandler(
         if (user is null)
         {
             return Error.NotFound();
+        }
+
+        // A regional administrator may not deactivate someone granted outside their region, the root administrator above all.
+        if (!await reach.CoversAsync(user.Id.Value, UserAccessPermissions.UsersManage, cancellationToken))
+        {
+            return Error.Forbidden();
         }
 
         user.Deactivate();
