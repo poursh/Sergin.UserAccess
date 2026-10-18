@@ -15,8 +15,7 @@ public static class UserAccessNavigation
         "/ua/users",
         Icons.Material.Filled.People,
         Order: 200,
-        RequiredPermission: UserAccessPermissions.UsersRead,
-        AtRoot: true);
+        RequiredPermission: UserAccessPermissions.UsersRead);
 
     // Shown to a regional administrator too: the tree page lists the subtrees their scopes.read grants reach.
     public static SerginNavItem Scopes { get; } = new(
