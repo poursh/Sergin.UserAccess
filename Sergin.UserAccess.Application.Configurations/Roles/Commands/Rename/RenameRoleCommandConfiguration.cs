@@ -1,11 +1,12 @@
 using Sergin.SharedKernel.Application.Commands.Configuration;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.Rename;
+using Sergin.UserAccess.Domain.Roles;
 
 namespace Sergin.UserAccess.Application.Configurations.Roles.Commands.Rename;
 
 // No RequirePermissions: the permission is checked against the target scope in the handler, which is the
 // record's own scope rather than the scope the caller is working in.
-internal sealed class RenameRoleCommandConfiguration : ICommandConfiguration<RenameRoleCommand>
+internal sealed class RenameRoleCommandConfiguration : ICommandConfiguration<RenameRoleCommand, Role>
 {
     public void Configure(CommandConfigurationBuilder<RenameRoleCommand> builder) => builder.RequireExpectedVersion();
 }
