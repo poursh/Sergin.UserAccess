@@ -17,6 +17,7 @@ internal static class AuthorizationInstallationExtensions
         services.AddScoped<ScopedPermissionChecker>();
         services.AddScoped<IScopedPermissionChecker>(provider => provider.GetRequiredService<ScopedPermissionChecker>());
         services.AddScoped<IScopePathResolver>(provider => provider.GetRequiredService<ScopedPermissionChecker>());
+        services.AddScoped<IScopeDirectory, ScopeDirectory>();
         services.AddTransient<IEffectiveGrantQueryRepository, EffectiveGrantQueryRepository>();
 
         return services;

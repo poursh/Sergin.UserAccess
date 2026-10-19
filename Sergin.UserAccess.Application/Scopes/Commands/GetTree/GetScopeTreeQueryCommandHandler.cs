@@ -38,17 +38,10 @@ internal sealed class GetScopeTreeQueryCommandHandler(
             visible = path => grants.Any(grant => grant.Covers(path));
         }
 
-        HashSet<Guid> shown = [.. rows.Where(row => visible(new ScopePath(row.Path))).Select(row => row.Id)];
-
         IReadOnlyCollection<ScopeTreeItem> tree =
         [
-            .. rows
-                .Where(row => shown.Contains(row.Id))
-                .Select(row => new ScopeTreeItem(
-                    row.Id,
-                    row.ParentId is { } parentId && shown.Contains(parentId) ? parentId : null,
-                    row.Name,
-                    new ScopePath(row.Path).Depth))
+            .. ScopeTreeProjection.Project(rows, visible)
+                .Select(scope => new ScopeTreeItem(scope.Id, scope.ParentId, scope.Name, scope.Depth))
         ];
 
         return tree.ToErrorOr();
