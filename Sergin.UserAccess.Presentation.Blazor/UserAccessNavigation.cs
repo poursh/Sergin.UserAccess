@@ -1,5 +1,6 @@
-using MudBlazor;
+﻿using MudBlazor;
 using Sergin.SharedKernel.Modules;
+using Sergin.UserAccess.Application.Contracts;
 
 namespace Sergin.UserAccess.Presentation.Blazor;
 
@@ -14,7 +15,15 @@ public static class UserAccessNavigation
         "/ua/users",
         Icons.Material.Filled.People,
         Order: 200,
-        RequiredPermission: "permission.ua.users.read");
+        RequiredPermission: UserAccessPermissions.UsersRead);
 
-    public static IReadOnlyCollection<SerginNavItem> Items { get; } = [Users];
+    // Shown to a regional administrator too: the tree page lists the subtrees their scopes.read grants reach.
+    public static SerginNavItem Scopes { get; } = new(
+        "Scopes",
+        "/ua/scopes",
+        Icons.Material.Filled.AccountTree,
+        Order: 210,
+        RequiredPermission: UserAccessPermissions.ScopesRead);
+
+    public static IReadOnlyCollection<SerginNavItem> Items { get; } = [Users, Scopes];
 }

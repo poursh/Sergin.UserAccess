@@ -1,0 +1,24 @@
+@if (ordered.Count == 0)
+{
+    <MudText Typo="Typo.body2">@EmptyText</MudText>
+}
+else
+{
+    <MudSimpleTable Hover="true" Dense="true">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ScopeTreeItem scope in ordered)
+            {
+                <tr>
+                    <td style="@Indent(scope)"><MudLink Href="@($"/ua/scopes/{scope.Id}")">@scope.Name</MudLink></td>
+                    <td>@scope.Depth</td>
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+}

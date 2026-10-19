@@ -1,0 +1,61 @@
+@page "/ua/roles/{Id:guid}"
+
+<PageTitle>Role</PageTitle>
+
+<SerginBreadcrumbs Trail="Trail" />
+
+<SerginProblemPanel Problem="problem" />
+
+@if (role is not null)
+{
+    <MudCard Class="mb-4">
+        <MudCardContent>
+            <MudText Typo="Typo.h5">@role.Name</MudText>
+            <MudText Typo="Typo.body2">Owned by <MudLink Href="@($"/ua/scopes/{role.OwnerScopeId}")">@role.OwnerScopeName</MudLink></MudText>
+            <MudSwitch T="bool" Value="role.IsInheritable" ValueChanged="SetInheritableAsync" Color="Color.Primary"
+                       Disabled="busy" Label="Inheritable: scopes below the owner can use it too" />
+        </MudCardContent>
+    </MudCard>
+
+    <MudForm @ref="form" Model="model" Validation="@validation" @bind-IsValid="isValid"
+             SuppressImplicitSubmission="false" onsubmit="@OnRename">
+        <MudCard Class="mb-4">
+            <MudCardContent>
+                <MudTextField @bind-Value="model.Name" Label="Code" For="@(() => model.Name)" Immediate="true" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                           Color="Color.Primary" Disabled="@(busy || !isValid)">Rename</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudForm>
+
+    <MudCard Class="mb-4">
+        <MudCardContent>
+            <MudText Typo="Typo.h6">Permissions</MudText>
+            @foreach (string permission in role.Permissions)
+            {
+                <MudChip T="string" Value="@permission" OnClose="@(_ => RevokeAsync(permission))">@permission</MudChip>
+            }
+            <MudSelect T="string" @bind-Value="permissionToGrant" Label="Add permission">
+                @foreach (string permission in knownPermissions.Except(role.Permissions))
+                {
+                    <MudSelectItem T="string" Value="@permission">@permission</MudSelectItem>
+                }
+            </MudSelect>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary"
+                       Disabled="@(busy || string.IsNullOrEmpty(permissionToGrant))" OnClick="GrantAsync">Add</MudButton>
+        </MudCardActions>
+    </MudCard>
+
+    <MudCard>
+        <MudCardContent>
+            <MudCheckBox T="bool" @bind-Value="cascade" Label="Also revoke every assignment of this role" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Outlined" Color="Color.Error" Disabled="busy" OnClick="DeleteAsync">Delete</MudButton>
+        </MudCardActions>
+    </MudCard>
+}

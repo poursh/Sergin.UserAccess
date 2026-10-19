@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,9 +7,11 @@ using Sergin.SharedKernel.Modules;
 using Sergin.UserAccess.Application;
 using Sergin.UserAccess.Application.Configurations;
 using Sergin.UserAccess.Application.Contracts;
+using Sergin.UserAccess.Authorization;
 using Sergin.UserAccess.Infrastructure.Data;
 using Sergin.UserAccess.Presentation.Blazor;
 using Sergin.UserAccess.Roles;
+using Sergin.UserAccess.Scopes;
 using Sergin.UserAccess.Users;
 
 namespace Sergin.UserAccess;
@@ -35,9 +37,18 @@ public sealed class UserAccessModule : ISerginWebApiModule, ISerginWebUiModule
         services.AddUserDependencies();
 
         services.AddRoleDependencies();
+
+        services.AddScopeDependencies();
+
+        services.AddAuthorizationDependencies();
     }
 
     public Task MigrateAsync(IServiceProvider services) => services.MigrateDbContextAsync<UserAccessDbContext>();
 
-    public void MapEndpoints(RouteGroupBuilder group) => group.MapUserEndpoints();
+    public void MapEndpoints(RouteGroupBuilder group)
+    {
+        group.MapUserEndpoints();
+        group.MapScopeEndpoints();
+        group.MapRoleEndpoints();
+    }
 }

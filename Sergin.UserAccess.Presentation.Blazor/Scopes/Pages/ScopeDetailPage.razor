@@ -1,0 +1,85 @@
+@page "/ua/scopes/{Id:guid}"
+
+<PageTitle>Scope</PageTitle>
+
+<SerginBreadcrumbs Trail="Trail" />
+
+<SerginProblemPanel Problem="problem" />
+
+@if (scope is not null)
+{
+    <MudCard Class="mb-4">
+        <MudCardContent>
+            <MudText Typo="Typo.h5">@scope.Name</MudText>
+            @if (scope.ParentId is { } parentId)
+            {
+                <MudText Typo="Typo.body2">Under <MudLink Href="@($"/ua/scopes/{parentId}")">@scope.ParentName</MudLink></MudText>
+            }
+            else
+            {
+                <MudText Typo="Typo.body2">The root of the tree</MudText>
+            }
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" Href="@($"/ua/scopes/new?parentId={Id}")">New child scope</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" Href="@($"/ua/roles/new?scopeId={Id}")">New role here</MudButton>
+        </MudCardActions>
+    </MudCard>
+
+    <MudForm @ref="form" Model="model" Validation="@validation" @bind-IsValid="isValid"
+             SuppressImplicitSubmission="false" onsubmit="@OnRename">
+        <MudCard Class="mb-4">
+            <MudCardContent>
+                <MudTextField @bind-Value="model.Name" Label="Name" For="@(() => model.Name)" Immediate="true" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                           Color="Color.Primary" Disabled="@(busy || !isValid)">Rename</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudForm>
+
+    @if (scope.ParentId is not null)
+    {
+        <MudCard Class="mb-4">
+            <MudCardContent>
+                <MudSelect T="Guid" @bind-Value="newParentId" Label="Move under">
+                    @foreach (ScopeTreeItem candidate in moveTargets)
+                    {
+                        <MudSelectItem T="Guid" Value="@candidate.Id">@candidate.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudCheckBox T="bool" @bind-Value="cascade" Label="When deleting, also revoke its assignments and delete the roles it owns" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary"
+                           Disabled="@(busy || newParentId == Guid.Empty)" OnClick="MoveAsync">Move</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Error" Disabled="busy" OnClick="DeleteAsync">Delete</MudButton>
+            </MudCardActions>
+        </MudCard>
+    }
+
+    <MudText Typo="Typo.h5" Class="mt-6 mb-2">Child scopes</MudText>
+    <ScopeTreeTable Scopes="tree" UnderId="Id" EmptyText="No child scopes." />
+
+    <MudText Typo="Typo.h5" Class="mt-6 mb-2">Roles usable here</MudText>
+    <MudSimpleTable Hover="true" Dense="true">
+        <thead>
+            <tr>
+                <th>Role</th>
+                <th>Owned by</th>
+                <th>Inheritable</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (AssignableRoleItem role in roles)
+            {
+                <tr>
+                    <td><MudLink Href="@($"/ua/roles/{role.Id}")">@role.Name</MudLink></td>
+                    <td>@role.OwnerScopeName</td>
+                    <td>@(role.IsInheritable ? "Yes" : "No")</td>
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+}

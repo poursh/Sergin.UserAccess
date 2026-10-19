@@ -1,7 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sergin.UserAccess.Domain.Users;
-using Sergin.UserAccess.Infrastructure.Data.Roles.Converters;
 using Sergin.UserAccess.Infrastructure.Data.Users.Converters;
 
 namespace Sergin.UserAccess.Infrastructure.Data.Users;
@@ -39,16 +38,17 @@ internal sealed class UserEntityTypeConfiguration : IEntityTypeConfiguration<Use
         builder.Property(u => u.FirstName).HasMaxLength(User.NameMaxLength);
         builder.Property(u => u.LastName).HasMaxLength(User.NameMaxLength);
 
-        builder.OwnsMany(u => u.Roles, role =>
-        {
-            role.ToTable("user_roles");
-            role.WithOwner().HasForeignKey("user_id");
-            role.Property(r => r.RoleId).HasConversion<RoleIdConverter>().HasColumnName("role_id");
-            role.HasKey("user_id", "RoleId");
-        });
+        // A regular entity type, not owned: an assignment has an identity of its own (it is revoked by id) and
+        // keys to roles and scopes. The aggregate boundary is held by the repository layer — no DbSet, no
+        // repository of its own, written only through User.Assignments. The shadow UserId is user_id.
+        builder.HasMany(u => u.Assignments)
+            .WithOne()
+            .HasForeignKey("UserId")
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Navigation(u => u.Roles)
-            .HasField("roles")
+        builder.Navigation(u => u.Assignments)
+            .HasField("assignments")
             .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

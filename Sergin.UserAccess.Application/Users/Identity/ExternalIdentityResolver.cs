@@ -33,6 +33,6 @@ internal sealed class ExternalIdentityResolver(ISender sender) : IExternalIdenti
                 $"Could not provision the signed-in user '{identity.UserName}': {result.FirstError.Description}");
         }
 
-        return new ExternalIdentityResult(result.Value.UserId, result.Value.Permissions);
+        return new ExternalIdentityResult(result.Value.UserId);
     }
 }
