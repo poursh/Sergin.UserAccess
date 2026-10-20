@@ -2,9 +2,9 @@ using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.SharedKernel.Application.Times;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts.Scopes;
 using Sergin.UserAccess.Application.Contracts.Scopes.Commands.Move;
 using Sergin.UserAccess.Domain.Scopes;
+using Sergin.UserAccess.Application.Configurations.Scopes;
 
 namespace Sergin.UserAccess.Application.Scopes.Commands.Move;
 

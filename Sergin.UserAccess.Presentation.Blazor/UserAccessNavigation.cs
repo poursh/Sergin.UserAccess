@@ -1,7 +1,7 @@
 ﻿using MudBlazor;
 using Sergin.SharedKernel.Modules;
-using Sergin.UserAccess.Application.Contracts.Users;
-using Sergin.UserAccess.Application.Contracts.Scopes;
+using Sergin.UserAccess.Application.Configurations.Scopes;
+using Sergin.UserAccess.Application.Configurations.Users;
 
 namespace Sergin.UserAccess.Presentation.Blazor;
 

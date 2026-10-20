@@ -1,8 +1,8 @@
 ﻿using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
-using Sergin.UserAccess.Application.Contracts.Scopes;
 using Sergin.UserAccess.Application.Contracts.Scopes.Commands.Rename;
 using Sergin.UserAccess.Domain.Scopes;
+using Sergin.UserAccess.Application.Configurations.Scopes;
 
 namespace Sergin.UserAccess.Application.Scopes.Commands.Rename;
 

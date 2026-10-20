@@ -1,7 +1,7 @@
 ﻿using Sergin.UserAccess.Domain.Users;
 using Sergin.SharedKernel.Application.Commands;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts.Users;
+using Sergin.UserAccess.Application.Configurations.Users;
 
 namespace Sergin.UserAccess.Application.Users.Commands.DeactivateUser;
 

@@ -1,8 +1,8 @@
 ﻿using Sergin.SharedKernel.Application.Commands.Queries;
 using Sergin.UserAccess.Application.Authorization;
 using Sergin.UserAccess.Application.Scopes;
-using Sergin.UserAccess.Application.Contracts.Users;
 using Sergin.UserAccess.Application.Contracts.Users.Assignments.Commands.GetEffective;
+using Sergin.UserAccess.Application.Configurations.Users;
 
 namespace Sergin.UserAccess.Application.Users.Assignments.Commands.GetEffective;
 

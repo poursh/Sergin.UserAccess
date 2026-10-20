@@ -1,7 +1,7 @@
 ﻿using Sergin.SharedKernel.Application.Commands.Queries;
 using Sergin.SharedKernel.Application.Securities.Authorization;
-using Sergin.UserAccess.Application.Contracts.Roles;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.GetAssignable;
+using Sergin.UserAccess.Application.Configurations.Roles;
 
 namespace Sergin.UserAccess.Application.Roles.Commands.GetAssignable;
 

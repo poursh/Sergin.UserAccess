@@ -1,10 +1,10 @@
 ﻿using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
-using Sergin.UserAccess.Application.Contracts.Roles;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.Create;
 using Sergin.SharedKernel.Domain.Securities;
 using Sergin.UserAccess.Domain.Roles;
 using Sergin.UserAccess.Domain.Scopes;
+using Sergin.UserAccess.Application.Configurations.Roles;
 
 namespace Sergin.UserAccess.Application.Roles.Commands.Create;
 

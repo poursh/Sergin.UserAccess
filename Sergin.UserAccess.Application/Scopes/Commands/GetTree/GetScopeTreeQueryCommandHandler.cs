@@ -2,9 +2,9 @@
 using Sergin.SharedKernel.Application.Securities.Users;
 using Sergin.SharedKernel.Domain.Securities;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts.Scopes;
 using Sergin.UserAccess.Application.Contracts.Scopes.Commands.GetTree;
 using Sergin.UserAccess.Domain.Scopes;
+using Sergin.UserAccess.Application.Configurations.Scopes;
 
 namespace Sergin.UserAccess.Application.Scopes.Commands.GetTree;
 

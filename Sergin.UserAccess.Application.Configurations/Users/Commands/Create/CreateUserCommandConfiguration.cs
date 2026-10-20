@@ -1,5 +1,4 @@
 using Sergin.SharedKernel.Application.Commands.Configuration;
-using Sergin.UserAccess.Application.Contracts.Users;
 using Sergin.UserAccess.Application.Contracts.Users.Commands.Create;
 using Sergin.UserAccess.Domain.Users;
 

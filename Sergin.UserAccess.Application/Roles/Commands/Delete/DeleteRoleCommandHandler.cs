@@ -1,13 +1,13 @@
 ﻿using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts.Roles;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.Delete;
 using Sergin.SharedKernel.Application.Securities.Users;
 using Sergin.SharedKernel.Application.Times;
 using Sergin.UserAccess.Domain.Roles;
 using Sergin.UserAccess.Domain.Users;
 using Sergin.UserAccess.Domain.Users.Assignments;
+using Sergin.UserAccess.Application.Configurations.Roles;
 
 namespace Sergin.UserAccess.Application.Roles.Commands.Delete;
 

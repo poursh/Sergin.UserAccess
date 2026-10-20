@@ -1,9 +1,9 @@
 using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts.Roles;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.Rename;
 using Sergin.UserAccess.Domain.Roles;
+using Sergin.UserAccess.Application.Configurations.Roles;
 
 namespace Sergin.UserAccess.Application.Roles.Commands.Rename;
 

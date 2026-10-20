@@ -1,6 +1,6 @@
 using Sergin.SharedKernel.Domain.Securities;
 
-namespace Sergin.UserAccess.Application.Contracts.Roles;
+namespace Sergin.UserAccess.Application.Configurations.Roles;
 
 /// <summary>The permissions the Role aggregate owns, checked against the role's owner scope.</summary>
 public static class RolePermissions

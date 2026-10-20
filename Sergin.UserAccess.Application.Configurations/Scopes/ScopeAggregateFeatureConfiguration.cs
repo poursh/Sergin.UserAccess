@@ -1,5 +1,4 @@
 using Sergin.SharedKernel.Application.Aggregates;
-using Sergin.UserAccess.Application.Contracts.Scopes;
 using Sergin.UserAccess.Domain.Scopes;
 
 namespace Sergin.UserAccess.Application.Configurations.Scopes;
