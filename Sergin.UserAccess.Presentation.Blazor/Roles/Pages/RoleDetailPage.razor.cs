@@ -73,8 +73,13 @@ public sealed partial class RoleDetailPage
 
     protected override void OnInitialized() => validation = FormValidator.RulesFor(ToRenameCommand);
 
+    private string LabelOf(string? name) => name is null ? string.Empty : PermissionLabels.Of(Catalog, Localizer, name);
+
+    // A stored row that is not even a well-formed name is unknown too, not a render failure.
     private PermissionDefinition? TryDefine(string permission) =>
-        Catalog.TryGet(Permission.Create(permission), out PermissionDefinition? definition) ? definition : null;
+        Permission.TryCreate(permission, out Permission? parsed) && Catalog.TryGet(parsed, out PermissionDefinition? definition)
+            ? definition
+            : null;
 
     private bool IsGranted(PermissionDefinition definition) =>
         role?.Permissions.Contains(definition.Permission.Value) == true;

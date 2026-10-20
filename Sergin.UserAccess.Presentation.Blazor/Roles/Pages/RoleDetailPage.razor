@@ -45,10 +45,10 @@
                     <MudChip T="string" Value="@permission" OnClose="@(_ => RevokeAsync(permission))">@permission</MudChip>
                 }
             }
-            <MudSelect T="string" @bind-Value="permissionToGrant" Label="Add permission">
+            <MudSelect T="string" @bind-Value="permissionToGrant" ToStringFunc="@LabelOf" Label="Add permission">
                 @foreach (PermissionCatalogModule module in Catalog.Grouped())
                 {
-                    <MudListSubheader>@Localizer[$"Permissions.{module.Schema}"].Value</MudListSubheader>
+                    <MudListSubheader>@PermissionLabels.Module(Localizer, module.Schema)</MudListSubheader>
                     @foreach (PermissionCatalogGroup group in module.Groups)
                     {
                         <MudListSubheader Class="pl-6">@group.Name</MudListSubheader>

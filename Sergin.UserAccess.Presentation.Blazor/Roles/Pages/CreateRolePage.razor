@@ -13,11 +13,11 @@
             <MudTextField @bind-Value="model.Name" Label="Code" For="@(() => model.Name)" Immediate="true" />
             <MudSwitch T="bool" @bind-Value="model.IsInheritable" Color="Color.Primary"
                        Label="Inheritable: scopes below this one can use it too" />
-            <MudSelect T="string" MultiSelection="true" @bind-SelectedValues="model.Permissions" Label="Permissions"
+            <MudSelect T="string" MultiSelection="true" ToStringFunc="@LabelOf" MultiSelectionTextFunc="@SelectedText" @bind-SelectedValues="model.Permissions" Label="Permissions"
                        For="@(() => model.Name)">
                 @foreach (PermissionCatalogModule module in Catalog.Grouped())
                 {
-                    <MudListSubheader>@Localizer[$"Permissions.{module.Schema}"].Value</MudListSubheader>
+                    <MudListSubheader>@PermissionLabels.Module(Localizer, module.Schema)</MudListSubheader>
                     @foreach (PermissionCatalogGroup group in module.Groups)
                     {
                         <MudListSubheader Class="pl-6">@group.Name</MudListSubheader>

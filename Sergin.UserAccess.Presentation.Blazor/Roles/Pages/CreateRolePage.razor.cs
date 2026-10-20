@@ -51,6 +51,11 @@ public sealed partial class CreateRolePage
         new("New role"),
     ];
 
+    private string LabelOf(string? name) => name is null ? string.Empty : PermissionLabels.Of(Catalog, Localizer, name);
+
+    private string SelectedText(IReadOnlyList<string> selected) =>
+        string.Join(", ", selected.Select(LabelOf));
+
     protected override void OnInitialized() => validation = FormValidator.RulesFor(ToCommand);
 
     private CreateRoleCommand ToCommand() => new(
