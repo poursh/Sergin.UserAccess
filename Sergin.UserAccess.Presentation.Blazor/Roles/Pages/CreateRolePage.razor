@@ -24,7 +24,7 @@
                         @foreach (PermissionDefinition definition in group.Permissions)
                         {
                             <MudSelectItem T="string" Value="@definition.Permission.Value">
-                                @definition.Label <MudText Typo="Typo.caption">@definition.Permission.Value</MudText>
+                                @Localizer[definition.Label].Value <MudText Typo="Typo.caption">@definition.Permission.Value</MudText>
                             </MudSelectItem>
                         }
                     }

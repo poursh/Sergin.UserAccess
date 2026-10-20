@@ -35,7 +35,7 @@
             <MudText Typo="Typo.h6">Permissions</MudText>
             @foreach (PermissionDefinition definition in GrantedDefined)
             {
-                <MudChip T="string" Value="@definition.Permission.Value" OnClose="@(_ => RevokeAsync(definition.Permission.Value))">@definition.Label</MudChip>
+                <MudChip T="string" Value="@definition.Permission.Value" OnClose="@(_ => RevokeAsync(definition.Permission.Value))">@Localizer[definition.Label].Value</MudChip>
             }
             @if (GrantedUnknown.Count > 0)
             {
@@ -55,7 +55,7 @@
                         @foreach (PermissionDefinition definition in group.Permissions.Where(definition => !IsGranted(definition)))
                         {
                             <MudSelectItem T="string" Value="@definition.Permission.Value">
-                                @definition.Label <MudText Typo="Typo.caption">@definition.Permission.Value</MudText>
+                                @Localizer[definition.Label].Value <MudText Typo="Typo.caption">@definition.Permission.Value</MudText>
                             </MudSelectItem>
                         }
                     }

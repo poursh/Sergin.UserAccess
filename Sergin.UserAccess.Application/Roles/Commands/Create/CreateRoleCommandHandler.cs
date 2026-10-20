@@ -11,7 +11,8 @@ namespace Sergin.UserAccess.Application.Roles.Commands.Create;
 internal sealed class CreateRoleCommandHandler(
     IUserAccessUnitOfWork unitOfWork,
     IRoleRepository roles,
-    IScopeAuthorization authorization) : ICommandHandler<CreateRoleCommand, CreateRoleCommandResponse>
+    IScopeAuthorization authorization,
+    PermissionCatalog catalog) : ICommandHandler<CreateRoleCommand, CreateRoleCommandResponse>
 {
     public async Task<ErrorOr<CreateRoleCommandResponse>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
     {
@@ -22,7 +23,9 @@ internal sealed class CreateRoleCommandHandler(
 
         foreach (Permission permission in request.Permissions)
         {
-            if (!await authorization.CurrentUserHasAsync(permission, request.OwnerScopeId, cancellationToken))
+            // A grant is data: resolved against the catalogue, which the validator already required it to be in.
+            if (!catalog.TryGet(permission, out PermissionDefinition? definition)
+                || !await authorization.CurrentUserHasAsync(definition, request.OwnerScopeId, cancellationToken))
             {
                 return PermissionCeiling.Exceeded(permission);
             }
