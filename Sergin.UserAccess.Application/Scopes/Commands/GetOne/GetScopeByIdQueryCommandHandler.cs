@@ -1,6 +1,6 @@
 using Sergin.SharedKernel.Application.Concurrency;
 using Sergin.SharedKernel.Application.Securities.Authorization;
-using Sergin.UserAccess.Application.Contracts;
+using Sergin.UserAccess.Application.Contracts.Scopes;
 using Sergin.UserAccess.Application.Contracts.Scopes.Commands.GetOne;
 
 namespace Sergin.UserAccess.Application.Scopes.Commands.GetOne;
@@ -12,7 +12,7 @@ internal sealed class GetScopeByIdQueryCommandHandler(
     public override async Task<ErrorOr<Versioned<ScopeQueryResponse>>> HandleVersioned(
         GetScopeByIdQueryCommand request, CancellationToken cancellationToken)
     {
-        if (!await authorization.CurrentUserHasAsync(UserAccessPermissions.ScopesRead, request.Id, cancellationToken))
+        if (!await authorization.CurrentUserHasAsync(ScopePermissions.Read, request.Id, cancellationToken))
         {
             return Error.Forbidden();
         }

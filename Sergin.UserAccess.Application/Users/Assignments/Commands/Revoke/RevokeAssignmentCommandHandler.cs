@@ -1,7 +1,7 @@
 using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts;
+using Sergin.UserAccess.Application.Contracts.Users;
 using Sergin.UserAccess.Application.Contracts.Users.Assignments.Commands.Revoke;
 using Sergin.SharedKernel.Application.Securities.Users;
 using Sergin.SharedKernel.Application.Times;
@@ -29,7 +29,7 @@ internal sealed class RevokeAssignmentCommandHandler(
             return Error.NotFound();
         }
 
-        if (!await authorization.CurrentUserHasAsync(UserAccessPermissions.AssignmentsManage, assignment.ScopeId.Value, cancellationToken))
+        if (!await authorization.CurrentUserHasAsync(UserPermissions.AssignmentsManage, assignment.ScopeId.Value, cancellationToken))
         {
             return Error.Forbidden();
         }

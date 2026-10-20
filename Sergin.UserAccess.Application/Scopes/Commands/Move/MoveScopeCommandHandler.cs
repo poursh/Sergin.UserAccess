@@ -2,7 +2,7 @@ using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.SharedKernel.Application.Times;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts;
+using Sergin.UserAccess.Application.Contracts.Scopes;
 using Sergin.UserAccess.Application.Contracts.Scopes.Commands.Move;
 using Sergin.UserAccess.Domain.Scopes;
 
@@ -18,8 +18,8 @@ internal sealed class MoveScopeCommandHandler(
     public async Task<ErrorOr<MoveScopeCommandResponse>> Handle(MoveScopeCommand request, CancellationToken cancellationToken)
     {
         // Both ends: managing the subtree where it is, and where it is going.
-        if (!await authorization.CurrentUserHasAsync(UserAccessPermissions.ScopesManage, request.Id, cancellationToken)
-            || !await authorization.CurrentUserHasAsync(UserAccessPermissions.ScopesManage, request.NewParentId, cancellationToken))
+        if (!await authorization.CurrentUserHasAsync(ScopePermissions.Manage, request.Id, cancellationToken)
+            || !await authorization.CurrentUserHasAsync(ScopePermissions.Manage, request.NewParentId, cancellationToken))
         {
             return Error.Forbidden();
         }

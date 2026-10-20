@@ -2,7 +2,7 @@
 using Sergin.SharedKernel.Application.Securities.Users;
 using Sergin.SharedKernel.Domain.Securities;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts;
+using Sergin.UserAccess.Application.Contracts.Scopes;
 using Sergin.UserAccess.Application.Contracts.Scopes.Commands.GetTree;
 using Sergin.UserAccess.Domain.Scopes;
 
@@ -31,7 +31,7 @@ internal sealed class GetScopeTreeQueryCommandHandler(
         {
             IReadOnlyCollection<EffectiveGrant> grants = [
                 .. (await checker.GetActiveGrantsAsync(userContext.Id.Value, cancellationToken))
-                    .Where(grant => grant.Permissions.Contains(UserAccessPermissions.ScopesRead)
+                    .Where(grant => grant.Permissions.Contains(ScopePermissions.Read.Permission.Value)
                         || grant.Permissions.Contains(Permission.AllPlatform.Value))
             ];
 

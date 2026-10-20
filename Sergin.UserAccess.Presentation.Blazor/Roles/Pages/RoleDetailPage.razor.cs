@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Sergin.SharedKernel.Application.Commands.Configuration;
 using Sergin.SharedKernel.Application.Concurrency;
+using Sergin.SharedKernel.Application.Localizations;
+using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.SharedKernel.Domain;
 using Sergin.SharedKernel.Domain.Securities;
 using Sergin.SharedKernel.Presentation.Blazor.Errors;
@@ -24,7 +25,6 @@ public sealed partial class RoleDetailPage
     private RoleQueryResponse? role;
     private RowVersion? version;
     private SerginProblem? problem;
-    private IReadOnlyCollection<string> knownPermissions = [];
     private string? permissionToGrant;
     private bool cascade;
     private bool busy;
@@ -49,7 +49,10 @@ public sealed partial class RoleDetailPage
     private NavigationManager Navigation { get; set; } = default!;
 
     [Inject]
-    private CommandConfigurationRegistry Configurations { get; set; } = default!;
+    private PermissionCatalog Catalog { get; set; } = default!;
+
+    [Inject]
+    private ILocalizer Localizer { get; set; } = default!;
 
     private EventCallback OnRename => EventCallback.Factory.Create(this, RenameAsync);
 
@@ -60,11 +63,21 @@ public sealed partial class RoleDetailPage
         new(role?.Name ?? "Role"),
     ];
 
-    protected override void OnInitialized()
-    {
-        validation = FormValidator.RulesFor(ToRenameCommand);
-        knownPermissions = [.. Configurations.KnownPermissions.Select(permission => permission.Value)];
-    }
+    // The role's grants the catalogue defines, shown by label; a grant it no longer defines is listed apart by its
+    // raw name, still revocable.
+    private IEnumerable<PermissionDefinition> GrantedDefined =>
+        (role?.Permissions ?? []).Select(TryDefine).OfType<PermissionDefinition>();
+
+    private IReadOnlyCollection<string> GrantedUnknown =>
+        [.. (role?.Permissions ?? []).Where(permission => TryDefine(permission) is null)];
+
+    protected override void OnInitialized() => validation = FormValidator.RulesFor(ToRenameCommand);
+
+    private PermissionDefinition? TryDefine(string permission) =>
+        Catalog.TryGet(Permission.Create(permission), out PermissionDefinition? definition) ? definition : null;
+
+    private bool IsGranted(PermissionDefinition definition) =>
+        role?.Permissions.Contains(definition.Permission.Value) == true;
 
     protected override Task OnParametersSetAsync() => LoadAsync();
 

@@ -1,6 +1,6 @@
 ﻿using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
-using Sergin.UserAccess.Application.Contracts;
+using Sergin.UserAccess.Application.Contracts.Roles;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.Create;
 using Sergin.SharedKernel.Domain.Securities;
 using Sergin.UserAccess.Domain.Roles;
@@ -15,7 +15,7 @@ internal sealed class CreateRoleCommandHandler(
 {
     public async Task<ErrorOr<CreateRoleCommandResponse>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
     {
-        if (!await authorization.CurrentUserHasAsync(UserAccessPermissions.RolesManage, request.OwnerScopeId, cancellationToken))
+        if (!await authorization.CurrentUserHasAsync(RolePermissions.Manage, request.OwnerScopeId, cancellationToken))
         {
             return Error.Forbidden();
         }

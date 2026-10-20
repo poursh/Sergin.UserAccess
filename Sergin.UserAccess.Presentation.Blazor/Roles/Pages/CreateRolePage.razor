@@ -15,9 +15,19 @@
                        Label="Inheritable: scopes below this one can use it too" />
             <MudSelect T="string" MultiSelection="true" @bind-SelectedValues="model.Permissions" Label="Permissions"
                        For="@(() => model.Name)">
-                @foreach (string permission in knownPermissions)
+                @foreach (PermissionCatalogModule module in Catalog.Grouped())
                 {
-                    <MudSelectItem T="string" Value="@permission">@permission</MudSelectItem>
+                    <MudListSubheader>@Localizer[$"Permissions.{module.Schema}"].Value</MudListSubheader>
+                    @foreach (PermissionCatalogGroup group in module.Groups)
+                    {
+                        <MudListSubheader Class="pl-6">@group.Name</MudListSubheader>
+                        @foreach (PermissionDefinition definition in group.Permissions)
+                        {
+                            <MudSelectItem T="string" Value="@definition.Permission.Value">
+                                @definition.Label <MudText Typo="Typo.caption">@definition.Permission.Value</MudText>
+                            </MudSelectItem>
+                        }
+                    }
                 }
             </MudSelect>
         </MudCardContent>

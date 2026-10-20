@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Sergin.SharedKernel.Application.Commands.Configuration;
+using Sergin.SharedKernel.Application.Localizations;
+using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.SharedKernel.Domain.Securities;
 using Sergin.SharedKernel.Presentation.Blazor.Errors;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.Create;
@@ -13,7 +14,6 @@ public sealed partial class CreateRolePage
 {
     private readonly NewRoleFormModel model = new();
 
-    private IReadOnlyCollection<string> knownPermissions = [];
     private MudForm form = default!;
     private bool isValid;
     private bool submitting;
@@ -34,10 +34,13 @@ public sealed partial class CreateRolePage
     [Inject]
     private NavigationManager Navigation { get; set; } = default!;
 
-    // The permission catalogue: every permission a command configuration requires. The server still refuses
-    // one the user does not hold in this scope (the permission ceiling).
+    // The permission catalogue: every permission an aggregate registered. The server still refuses one the
+    // user does not hold in this scope (the permission ceiling).
     [Inject]
-    private CommandConfigurationRegistry Configurations { get; set; } = default!;
+    private PermissionCatalog Catalog { get; set; } = default!;
+
+    [Inject]
+    private ILocalizer Localizer { get; set; } = default!;
 
     private EventCallback OnSubmit => EventCallback.Factory.Create(this, SubmitAsync);
 
@@ -48,11 +51,7 @@ public sealed partial class CreateRolePage
         new("New role"),
     ];
 
-    protected override void OnInitialized()
-    {
-        validation = FormValidator.RulesFor(ToCommand);
-        knownPermissions = [.. Configurations.KnownPermissions.Select(permission => permission.Value)];
-    }
+    protected override void OnInitialized() => validation = FormValidator.RulesFor(ToCommand);
 
     private CreateRoleCommand ToCommand() => new(
         ScopeId,

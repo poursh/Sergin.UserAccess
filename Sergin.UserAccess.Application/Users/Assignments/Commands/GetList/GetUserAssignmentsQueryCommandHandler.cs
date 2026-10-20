@@ -1,5 +1,5 @@
 ﻿using Sergin.SharedKernel.Application.Commands.Queries;
-using Sergin.UserAccess.Application.Contracts;
+using Sergin.UserAccess.Application.Contracts.Users;
 using Sergin.UserAccess.Application.Contracts.Users.Assignments.Commands.GetList;
 
 namespace Sergin.UserAccess.Application.Users.Assignments.Commands.GetList;
@@ -11,7 +11,7 @@ internal sealed class GetUserAssignmentsQueryCommandHandler(IUserAssignmentQuery
         GetUserAssignmentsQueryCommand request, CancellationToken cancellationToken)
     {
         // A regional reader does not see the grants of someone granted outside their region.
-        if (!await reach.CoversAsync(request.UserId, UserAccessPermissions.UsersRead, cancellationToken))
+        if (!await reach.CoversAsync(request.UserId, UserPermissions.Read, cancellationToken))
         {
             return Error.Forbidden();
         }

@@ -1,7 +1,7 @@
 using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts;
+using Sergin.UserAccess.Application.Contracts.Scopes;
 using Sergin.UserAccess.Application.Contracts.Scopes.Commands.Create;
 using Sergin.UserAccess.Domain.Scopes;
 
@@ -15,7 +15,7 @@ internal sealed class CreateScopeCommandHandler(
 {
     public async Task<ErrorOr<CreateScopeCommandResponse>> Handle(CreateScopeCommand request, CancellationToken cancellationToken)
     {
-        if (!await authorization.CurrentUserHasAsync(UserAccessPermissions.ScopesManage, request.ParentId, cancellationToken))
+        if (!await authorization.CurrentUserHasAsync(ScopePermissions.Manage, request.ParentId, cancellationToken))
         {
             return Error.Forbidden();
         }

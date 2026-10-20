@@ -1,7 +1,7 @@
 using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts;
+using Sergin.UserAccess.Application.Contracts.Users;
 using Sergin.UserAccess.Application.Contracts.Users.Assignments.Commands.Assign;
 using Sergin.SharedKernel.Application.Times;
 using Sergin.UserAccess.Domain.Roles;
@@ -22,7 +22,7 @@ internal sealed class AssignRoleCommandHandler(
 {
     public async Task<ErrorOr<AssignRoleCommandResponse>> Handle(AssignRoleCommand request, CancellationToken cancellationToken)
     {
-        if (!await authorization.CurrentUserHasAsync(UserAccessPermissions.AssignmentsManage, request.ScopeId, cancellationToken))
+        if (!await authorization.CurrentUserHasAsync(UserPermissions.AssignmentsManage, request.ScopeId, cancellationToken))
         {
             return Error.Forbidden();
         }

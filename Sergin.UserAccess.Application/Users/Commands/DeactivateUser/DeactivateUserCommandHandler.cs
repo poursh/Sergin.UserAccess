@@ -1,7 +1,7 @@
 ﻿using Sergin.UserAccess.Domain.Users;
 using Sergin.SharedKernel.Application.Commands;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts;
+using Sergin.UserAccess.Application.Contracts.Users;
 
 namespace Sergin.UserAccess.Application.Users.Commands.DeactivateUser;
 
@@ -22,7 +22,7 @@ internal sealed class DeactivateUserCommandHandler(
         }
 
         // A regional administrator may not deactivate someone granted outside their region, the root administrator above all.
-        if (!await reach.CoversAsync(user.Id.Value, UserAccessPermissions.UsersManage, cancellationToken))
+        if (!await reach.CoversAsync(user.Id.Value, UserPermissions.Manage, cancellationToken))
         {
             return Error.Forbidden();
         }

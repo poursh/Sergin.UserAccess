@@ -33,14 +33,32 @@
     <MudCard Class="mb-4">
         <MudCardContent>
             <MudText Typo="Typo.h6">Permissions</MudText>
-            @foreach (string permission in role.Permissions)
+            @foreach (PermissionDefinition definition in GrantedDefined)
             {
-                <MudChip T="string" Value="@permission" OnClose="@(_ => RevokeAsync(permission))">@permission</MudChip>
+                <MudChip T="string" Value="@definition.Permission.Value" OnClose="@(_ => RevokeAsync(definition.Permission.Value))">@definition.Label</MudChip>
+            }
+            @if (GrantedUnknown.Count > 0)
+            {
+                <MudText Typo="Typo.subtitle2">Unknown</MudText>
+                @foreach (string permission in GrantedUnknown)
+                {
+                    <MudChip T="string" Value="@permission" OnClose="@(_ => RevokeAsync(permission))">@permission</MudChip>
+                }
             }
             <MudSelect T="string" @bind-Value="permissionToGrant" Label="Add permission">
-                @foreach (string permission in knownPermissions.Except(role.Permissions))
+                @foreach (PermissionCatalogModule module in Catalog.Grouped())
                 {
-                    <MudSelectItem T="string" Value="@permission">@permission</MudSelectItem>
+                    <MudListSubheader>@Localizer[$"Permissions.{module.Schema}"].Value</MudListSubheader>
+                    @foreach (PermissionCatalogGroup group in module.Groups)
+                    {
+                        <MudListSubheader Class="pl-6">@group.Name</MudListSubheader>
+                        @foreach (PermissionDefinition definition in group.Permissions.Where(definition => !IsGranted(definition)))
+                        {
+                            <MudSelectItem T="string" Value="@definition.Permission.Value">
+                                @definition.Label <MudText Typo="Typo.caption">@definition.Permission.Value</MudText>
+                            </MudSelectItem>
+                        }
+                    }
                 }
             </MudSelect>
         </MudCardContent>
