@@ -28,6 +28,8 @@ public sealed class UserAccessModule : ISerginWebApiModule, ISerginWebUiModule
 
     public Assembly UiAssembly => UserAccessBlazorAssemblyReference.Assembly;
 
+    public SerginNavGroup NavGroup => UserAccessNavigation.Group;
+
     public IReadOnlyCollection<SerginNavItem> NavItems => UserAccessNavigation.Items;
 
     public void AddServices(IServiceCollection services, IConfigurationSection configuration)
