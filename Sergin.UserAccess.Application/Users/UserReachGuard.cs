@@ -20,7 +20,7 @@ internal sealed class UserReachGuard(
     IScopePathResolver paths,
     IDateTimeProvider clock)
 {
-    public async Task<bool> CoversAsync(Guid userId, Permission permission, CancellationToken cancellationToken)
+    public async Task<bool> CoversAsync(Guid userId, PermissionDefinition permission, CancellationToken cancellationToken)
     {
         ScopeReach reach = await authorization.CurrentUserReachAsync(permission, cancellationToken);
 

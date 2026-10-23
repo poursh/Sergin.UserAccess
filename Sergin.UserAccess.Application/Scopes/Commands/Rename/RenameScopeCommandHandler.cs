@@ -1,8 +1,8 @@
 ﻿using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
-using Sergin.UserAccess.Application.Contracts;
 using Sergin.UserAccess.Application.Contracts.Scopes.Commands.Rename;
 using Sergin.UserAccess.Domain.Scopes;
+using Sergin.UserAccess.Application.Configurations.Scopes;
 
 namespace Sergin.UserAccess.Application.Scopes.Commands.Rename;
 
@@ -13,7 +13,7 @@ internal sealed class RenameScopeCommandHandler(
 {
     public async Task<ErrorOr<RenameScopeCommandResponse>> Handle(RenameScopeCommand request, CancellationToken cancellationToken)
     {
-        if (!await authorization.CurrentUserHasAsync(UserAccessPermissions.ScopesManage, request.Id, cancellationToken))
+        if (!await authorization.CurrentUserHasAsync(ScopePermissions.Manage, request.Id, cancellationToken))
         {
             return Error.Forbidden();
         }

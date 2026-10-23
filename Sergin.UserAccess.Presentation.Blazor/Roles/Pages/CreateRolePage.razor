@@ -13,11 +13,21 @@
             <MudTextField @bind-Value="model.Name" Label="Code" For="@(() => model.Name)" Immediate="true" />
             <MudSwitch T="bool" @bind-Value="model.IsInheritable" Color="Color.Primary"
                        Label="Inheritable: scopes below this one can use it too" />
-            <MudSelect T="string" MultiSelection="true" @bind-SelectedValues="model.Permissions" Label="Permissions"
+            <MudSelect T="string" MultiSelection="true" ToStringFunc="@LabelOf" MultiSelectionTextFunc="@SelectedText" @bind-SelectedValues="model.Permissions" Label="Permissions"
                        For="@(() => model.Name)">
-                @foreach (string permission in knownPermissions)
+                @foreach (PermissionCatalogModule module in Catalog.Grouped())
                 {
-                    <MudSelectItem T="string" Value="@permission">@permission</MudSelectItem>
+                    <PermissionSubheader>@PermissionLabels.Module(Localizer, module.Schema)</PermissionSubheader>
+                    @foreach (PermissionCatalogGroup group in module.Groups)
+                    {
+                        <PermissionSubheader Class="pl-6">@group.Name</PermissionSubheader>
+                        @foreach (PermissionDefinition definition in group.Permissions)
+                        {
+                            <MudSelectItem T="string" Value="@definition.Permission.Value">
+                                @Localizer[definition.Label].Value <MudText Typo="Typo.caption">@definition.Permission.Value</MudText>
+                            </MudSelectItem>
+                        }
+                    }
                 }
             </MudSelect>
         </MudCardContent>

@@ -1,9 +1,9 @@
 using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.RevokePermission;
 using Sergin.UserAccess.Domain.Roles;
+using Sergin.UserAccess.Application.Configurations.Roles;
 
 namespace Sergin.UserAccess.Application.Roles.Commands.RevokePermission;
 
@@ -22,7 +22,7 @@ internal sealed class RevokeRolePermissionCommandHandler(
             return Error.NotFound();
         }
 
-        if (!await authorization.CurrentUserHasAsync(UserAccessPermissions.RolesManage, role.OwnerScopeId.Value, cancellationToken))
+        if (!await authorization.CurrentUserHasAsync(RolePermissions.Manage, role.OwnerScopeId.Value, cancellationToken))
         {
             return Error.Forbidden();
         }

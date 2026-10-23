@@ -1,7 +1,7 @@
 using Sergin.SharedKernel.Application.Concurrency;
 using Sergin.SharedKernel.Application.Securities.Authorization;
-using Sergin.UserAccess.Application.Contracts;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.GetOne;
+using Sergin.UserAccess.Application.Configurations.Roles;
 
 namespace Sergin.UserAccess.Application.Roles.Commands.GetOne;
 
@@ -19,7 +19,7 @@ internal sealed class GetRoleByIdQueryCommandHandler(
             return Error.NotFound();
         }
 
-        if (!await authorization.CurrentUserHasAsync(UserAccessPermissions.RolesRead, role.Value.OwnerScopeId, cancellationToken))
+        if (!await authorization.CurrentUserHasAsync(RolePermissions.Read, role.Value.OwnerScopeId, cancellationToken))
         {
             return Error.Forbidden();
         }

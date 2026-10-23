@@ -1,4 +1,5 @@
 using FluentValidation;
+using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.Create;
 using Sergin.UserAccess.Domain.Roles;
 using Sergin.UserAccess.Domain.Scopes;
@@ -7,7 +8,7 @@ namespace Sergin.UserAccess.Application.Roles.Commands.Create;
 
 internal sealed class CreateRoleCommandValidator : AbstractValidator<CreateRoleCommand>
 {
-    public CreateRoleCommandValidator(IScopeRepository scopes, IRoleQueryRepository roles)
+    public CreateRoleCommandValidator(IScopeRepository scopes, IRoleQueryRepository roles, PermissionCatalog catalog)
     {
         RuleFor(x => x.OwnerScopeId).NotEmpty();
 
@@ -22,6 +23,11 @@ internal sealed class CreateRoleCommandValidator : AbstractValidator<CreateRoleC
             .OverridePropertyName(nameof(CreateRoleCommand.Name));
 
         RuleFor(x => x.Permissions).NotNull();
+
+        RuleFor(x => x.Permissions)
+            .Must(permissions => permissions.All(permission => catalog.TryGet(permission, out _)))
+            .WithMessage("'{PropertyName}' must be permissions the platform defines.")
+            .When(x => x.Permissions is not null);
 
         // BR-4. Advisory: ix_roles_owner_scope_id_name guarantees the owner-scope part under a race.
         RuleFor(x => x.Name)

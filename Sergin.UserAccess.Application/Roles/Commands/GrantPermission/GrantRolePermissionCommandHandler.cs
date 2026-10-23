@@ -1,9 +1,10 @@
 using Sergin.SharedKernel.Application.Commands;
 using Sergin.SharedKernel.Application.Securities.Authorization;
 using Sergin.UserAccess.Application.Authorization;
-using Sergin.UserAccess.Application.Contracts;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.GrantPermission;
+using Sergin.SharedKernel.Domain.Securities;
 using Sergin.UserAccess.Domain.Roles;
+using Sergin.UserAccess.Application.Configurations.Roles;
 
 namespace Sergin.UserAccess.Application.Roles.Commands.GrantPermission;
 
@@ -11,7 +12,8 @@ internal sealed class GrantRolePermissionCommandHandler(
     IUserAccessUnitOfWork unitOfWork,
     IRoleRepository roles,
     IScopeAuthorization authorization,
-    IAuthorizationCacheInvalidator cache) : ICommandHandler<GrantRolePermissionCommand, GrantRolePermissionCommandResponse>
+    IAuthorizationCacheInvalidator cache,
+    PermissionCatalog catalog) : ICommandHandler<GrantRolePermissionCommand, GrantRolePermissionCommandResponse>
 {
     public async Task<ErrorOr<GrantRolePermissionCommandResponse>> Handle(GrantRolePermissionCommand request, CancellationToken cancellationToken)
     {
@@ -22,12 +24,14 @@ internal sealed class GrantRolePermissionCommandHandler(
             return Error.NotFound();
         }
 
-        if (!await authorization.CurrentUserHasAsync(UserAccessPermissions.RolesManage, role.OwnerScopeId.Value, cancellationToken))
+        if (!await authorization.CurrentUserHasAsync(RolePermissions.Manage, role.OwnerScopeId.Value, cancellationToken))
         {
             return Error.Forbidden();
         }
 
-        if (!await authorization.CurrentUserHasAsync(request.Permission, role.OwnerScopeId.Value, cancellationToken))
+        // A grant is data: resolved against the catalogue, which the validator already required it to be in.
+        if (!catalog.TryGet(request.Permission, out PermissionDefinition? definition)
+            || !await authorization.CurrentUserHasAsync(definition, role.OwnerScopeId.Value, cancellationToken))
         {
             return PermissionCeiling.Exceeded(request.Permission);
         }

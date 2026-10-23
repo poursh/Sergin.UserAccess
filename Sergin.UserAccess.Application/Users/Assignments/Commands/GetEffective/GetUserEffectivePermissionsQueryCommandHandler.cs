@@ -1,8 +1,8 @@
 ﻿using Sergin.SharedKernel.Application.Commands.Queries;
 using Sergin.UserAccess.Application.Authorization;
 using Sergin.UserAccess.Application.Scopes;
-using Sergin.UserAccess.Application.Contracts;
 using Sergin.UserAccess.Application.Contracts.Users.Assignments.Commands.GetEffective;
+using Sergin.UserAccess.Application.Configurations.Users;
 
 namespace Sergin.UserAccess.Application.Users.Assignments.Commands.GetEffective;
 
@@ -16,7 +16,7 @@ internal sealed class GetUserEffectivePermissionsQueryCommandHandler(
         GetUserEffectivePermissionsQueryCommand request, CancellationToken cancellationToken)
     {
         // A regional reader does not see the permissions of someone granted outside their region.
-        if (!await reach.CoversAsync(request.UserId, UserAccessPermissions.UsersRead, cancellationToken))
+        if (!await reach.CoversAsync(request.UserId, UserPermissions.Read, cancellationToken))
         {
             return Error.Forbidden();
         }

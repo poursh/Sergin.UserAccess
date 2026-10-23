@@ -1,7 +1,7 @@
 ﻿using Sergin.SharedKernel.Application.Commands.Queries;
 using Sergin.SharedKernel.Application.Securities.Authorization;
-using Sergin.UserAccess.Application.Contracts;
 using Sergin.UserAccess.Application.Contracts.Roles.Commands.GetAssignable;
+using Sergin.UserAccess.Application.Configurations.Roles;
 
 namespace Sergin.UserAccess.Application.Roles.Commands.GetAssignable;
 
@@ -11,7 +11,7 @@ internal sealed class GetAssignableRolesQueryCommandHandler(IRoleQueryRepository
     public async Task<ErrorOr<IReadOnlyCollection<AssignableRoleItem>>> Handle(
         GetAssignableRolesQueryCommand request, CancellationToken cancellationToken)
     {
-        if (!await authorization.CurrentUserHasAsync(UserAccessPermissions.RolesRead, request.ScopeId, cancellationToken))
+        if (!await authorization.CurrentUserHasAsync(RolePermissions.Read, request.ScopeId, cancellationToken))
         {
             return Error.Forbidden();
         }
