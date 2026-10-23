@@ -48,10 +48,10 @@
             <MudSelect T="string" @bind-Value="permissionToGrant" ToStringFunc="@LabelOf" Label="Add permission">
                 @foreach (PermissionCatalogModule module in Catalog.Grouped())
                 {
-                    <MudListSubheader>@PermissionLabels.Module(Localizer, module.Schema)</MudListSubheader>
+                    <PermissionSubheader>@PermissionLabels.Module(Localizer, module.Schema)</PermissionSubheader>
                     @foreach (PermissionCatalogGroup group in module.Groups)
                     {
-                        <MudListSubheader Class="pl-6">@group.Name</MudListSubheader>
+                        <PermissionSubheader Class="pl-6">@group.Name</PermissionSubheader>
                         @foreach (PermissionDefinition definition in group.Permissions.Where(definition => !IsGranted(definition)))
                         {
                             <MudSelectItem T="string" Value="@definition.Permission.Value">
