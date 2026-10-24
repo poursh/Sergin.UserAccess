@@ -40,6 +40,9 @@ internal static class UserInstallationExtensions
         // Makes the DevUser host's configured user a real administrator, so scoped checks answer for it.
         services.AddTransient<IDevUserSeeder, DevUserSeeder>();
 
+        // Names for the user ids other modules store — the audit popover's "by …".
+        services.AddScoped<IUserDirectory, UserDirectory>();
+
         return services;
     }
 
