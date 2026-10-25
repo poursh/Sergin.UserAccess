@@ -37,21 +37,21 @@
 <MudCard Class="mt-4">
     <MudCardContent>
         <MudText Typo="Typo.h6">Assign a role</MudText>
-        <MudSelect T="Guid" Value="model.ScopeId" ValueChanged="OnScopeChangedAsync" Label="Scope">
+        <MudSelect Variant="Variant.Outlined" Margin="Margin.Dense" T="Guid" Value="model.ScopeId" ValueChanged="OnScopeChangedAsync" Label="Scope">
             @foreach (ScopeTreeItem scope in scopes)
             {
                 <MudSelectItem T="Guid" Value="@scope.Id">@scope.Name</MudSelectItem>
             }
         </MudSelect>
-        <MudSelect T="Guid" @bind-Value="model.RoleId" Label="Role" Disabled="@(model.ScopeId == Guid.Empty)">
+        <MudSelect Variant="Variant.Outlined" Margin="Margin.Dense" T="Guid" @bind-Value="model.RoleId" Label="Role" Disabled="@(model.ScopeId == Guid.Empty)">
             @foreach (AssignableRoleItem role in roles)
             {
                 <MudSelectItem T="Guid" Value="@role.Id">@role.Name (@role.OwnerScopeName)</MudSelectItem>
             }
         </MudSelect>
         <MudSwitch T="bool" @bind-Value="model.IncludeSubtree" Color="Color.Primary" Label="Also every scope below" />
-        <MudDatePicker @bind-Date="model.ValidFromUtc" Label="Valid from (optional)" Clearable="true" />
-        <MudDatePicker @bind-Date="model.ValidUntilUtc" Label="Valid until (optional)" Clearable="true" />
+        <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Date="model.ValidFromUtc" Label="Valid from (optional)" Clearable="true" />
+        <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Date="model.ValidUntilUtc" Label="Valid until (optional)" Clearable="true" />
     </MudCardContent>
     <MudCardActions>
         <MudButton Variant="Variant.Filled" Color="Color.Primary"

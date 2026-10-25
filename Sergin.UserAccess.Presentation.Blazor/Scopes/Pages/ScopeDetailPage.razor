@@ -30,7 +30,7 @@
              SuppressImplicitSubmission="false" onsubmit="@OnRename">
         <MudCard Class="mb-4">
             <MudCardContent>
-                <MudTextField @bind-Value="model.Name" Label="Name" For="@(() => model.Name)" Immediate="true" />
+                <MudTextField Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="model.Name" Label="Name" For="@(() => model.Name)" Immediate="true" />
             </MudCardContent>
             <MudCardActions>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
@@ -43,7 +43,7 @@
     {
         <MudCard Class="mb-4">
             <MudCardContent>
-                <MudSelect T="Guid" @bind-Value="newParentId" Label="Move under">
+                <MudSelect Variant="Variant.Outlined" Margin="Margin.Dense" T="Guid" @bind-Value="newParentId" Label="Move under">
                     @foreach (ScopeTreeItem candidate in moveTargets)
                     {
                         <MudSelectItem T="Guid" Value="@candidate.Id">@candidate.Name</MudSelectItem>

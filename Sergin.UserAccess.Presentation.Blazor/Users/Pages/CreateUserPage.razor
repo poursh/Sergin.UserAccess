@@ -10,7 +10,7 @@
          SuppressImplicitSubmission="false" onsubmit="@OnSubmit">
     <MudCard>
         <MudCardContent>
-            <MudTextField @bind-Value="model.UserName" Label="User name" For="@(() => model.UserName)" Immediate="true" />
+            <MudTextField Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="model.UserName" Label="User name" For="@(() => model.UserName)" Immediate="true" />
         </MudCardContent>
         <MudCardActions>
             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"

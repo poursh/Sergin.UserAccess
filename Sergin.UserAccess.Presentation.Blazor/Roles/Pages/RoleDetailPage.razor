@@ -21,7 +21,7 @@
              SuppressImplicitSubmission="false" onsubmit="@OnRename">
         <MudCard Class="mb-4">
             <MudCardContent>
-                <MudTextField @bind-Value="model.Name" Label="Code" For="@(() => model.Name)" Immediate="true" />
+                <MudTextField Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="model.Name" Label="Code" For="@(() => model.Name)" Immediate="true" />
             </MudCardContent>
             <MudCardActions>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
@@ -45,7 +45,7 @@
                     <MudChip T="string" Value="@permission" OnClose="@(_ => RevokeAsync(permission))">@permission</MudChip>
                 }
             }
-            <MudSelect T="string" @bind-Value="permissionToGrant" ToStringFunc="@LabelOf" Label="Add permission">
+            <MudSelect Variant="Variant.Outlined" Margin="Margin.Dense" T="string" @bind-Value="permissionToGrant" ToStringFunc="@LabelOf" Label="Add permission">
                 @foreach (PermissionCatalogModule module in Catalog.Grouped())
                 {
                     <PermissionSubheader>@PermissionLabels.Module(Localizer, module.Schema)</PermissionSubheader>
